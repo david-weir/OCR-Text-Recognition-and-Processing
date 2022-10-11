@@ -1,95 +1,120 @@
 # School of Computing &mdash; Year 4 Project Proposal Form
 
-> Edit (then commit and push) this document to complete your proposal form.
-> Make use of figures / diagrams where appropriate.
->
-> Do not rename this file.
 
 ## SECTION A
 
-|                     |                   |
-|---------------------|-------------------|
-|Project Title:       | xxxxxx            |
-|Student 1 Name:      | xxxxxx            |
-|Student 1 ID:        | xxxxxx            |
-|Student 2 Name:      | xxxxxx            |
-|Student 2 ID:        | xxxxxx            |
-|Project Supervisor:  | xxxxxx            |
+|                     |                            |
+|---------------------|----------------------------|
+|Project Title:       | Text to Speech Reading Aid |
+|Student 1 Name:      | Róisín O'Rourke            |
+|Student 1 ID:        | 19360491                   |
+|Student 2 Name:      | David Weir                 |
+|Student 2 ID:        | 19433086                   |
+|Project Supervisor:  | Paul Clarke                |
 
-> Ensure that the Supervisor formally agrees to supervise your project; this is only recognised once the
-> Supervisor assigns herself/himself via the project Dashboard.
->
-> Project proposals without an assigned
-> Supervisor will not be accepted for presentation to the Approval Panel.
 
 ## SECTION B
 
-> Guidance: This document is expected to be approximately 3 pages in length, but it can exceed this page limit.
-> It is also permissible to carry forward content from this proposal to your later documents (e.g. functional
-> specification) as appropriate.
->
-> Your proposal must include *at least* the following sections.
-
-
 ### Introduction
 
-> Describe the general area covered by the project.
+> The system we propose is an Optical Character Recognition (OCR) text to speech reading aid. It will have the ability 
+to scan printed and handwritten text, detect the text language, translate the text into a set sample of languages and 
+then convert the text to mp3/pdf. The program will be written in Python and will use technologies such as tensorflow, 
+tesseract, openCV, and Keras.
 
 ### Outline
 
-> Outline the proposed project.
+> The project aims to help students and the visually impaired. The application will be able to scan uploaded pdf 
+> documents and images containing printed or handwritten text. It will be capable of extracting the text from the 
+> documents/files and then detect the language of the text. If the user wishes to translate the text from one language
+> to another language they will be able to do so. Finally the system will create a mp3 file containing an audio reading
+> of the text so that it can be listened to by the user or it will create a pdf version of the provided text (useful 
+> for transforming written/printed notes to a student’s device).
 
 ### Background
 
-> Where did the ideas come from?
+> We came up with the idea for this project while brainstorming a system that would be multifunctional and have an 
+> accessibility aspect to it. We wanted the project idea to have a practical use, we found the topic of OCR to be 
+> interesting and we saw its potential for an interesting 4th year project.
 
 ### Achievements
 
-> What functions will the project provide? Who will the users be?
+> The program will be able to assist a wide variety of users with different needs and wants for the text to speech 
+> abilities of the system.
+We aim to provide a number of functions to the project, namely:
+> * The program will be able to process images of printed and handwritten text and pdfs.
+> * It will then detect the language of the processed text.
+> * Using the detected language, the project will be able to translate the text into a number of different languages, if
+> requested by the end user.
+> * Finally, it will convert the text to pdf format and/or create a text-speech mp3 file so it can be listened to by
+> the user. 
+>
+> The main expected users would be visually impaired people and students, however, the end product may be useful to many
+> other user types including employees at work or the everyday person who wishes to convert their written lists or books
+> to a pdf version accessible on their device.
+
 
 ### Justification
 
-> Why/when/where/how will it be useful?
+> The program will be able to assist the visually impaired by providing them with a tool to scan printed/written text 
+> or pdfs and convert them to mp3 so that they can listen to them. Students may also find it useful to listen to their
+> notes in audio format (e.g. when commuting) or to convert their written/printed notes to a pdf version on their
+> devices.
+> 
+>In an educational setting, the system could allow visually impaired lecturers to scan written exam papers and correct 
+> them by listening to them or it could assist visually impaired students in their studies. It will also be able to help
+> students who wish to listen to their notes and study materials as they revise. The translation abilities of the system
+> will also especially aid international students who can scan books/notes not provided in their home language and then 
+> listen to them in their own language.
+>
+>This project could also be useful in the same ways in the workplace, as employees can have the same needs as students
+> or to the everyday person at home.
+
 
 ### Programming language(s)
 
-> List the proposed language(s) to be used.
+> The project will be developed in **Python** as it has a number of useful libraries available relevant to the project.
+>
+>The main programming language used for the project will be Python and we will be making use of several Python libraries
+> to aid us in building the program.
+
 
 ### Programming tools / Tech stack
 
-> Describe the compiler, database, web server, etc., and any other software tools you plan to use.
+> * PyTesseract
+> * Python
+> * OpenCV
+> * Keras
+> * Tensorflow
+> * Hugging face transformers
+
 
 ### Hardware
 
-> Describe any non-standard hardware components which will be required.
+> **N/A** - No non-standard hardware will be required
 
 ### Learning Challenges
 
-> List the main new things (technologies, languages, tools, etc) that you will have to learn.
+> * OCR model training (deep learning)
+> * Handwriting recognition (Keras, Tensorflow, OpenCV)
+> * Language Detection (language detection libraries)
+> * Machine translation (Pytorch, transformer models)
+
 
 ### Breakdown of work
 
-> Clearly identify who will undertake which parts of the project.
->
-> It must be clear from the explanation of this breakdown of work both that each student is responsible for
-> separate, clearly-defined tasks, and that those responsibilities substantially cover all of the work required
-> for the project.
+#### Róisín O'Rourke
 
-#### Student 1
+> * Front end development
+> * Language detection
+> * Image / text conversion
 
-> *Student 1 should complete this section.*
 
-#### Student 2
+#### David Weir
 
-> *Student 2 should complete this section.*
+> * OCR model training
+> * Machine translation
+> * Model testing
 
-## Example
 
-> Example: Here's how you can include images in markdown documents...
-
-<!-- Basically, just use HTML! -->
-
-<p align="center">
-  <img src="./res/cat.png" width="300px">
-</p>
 
