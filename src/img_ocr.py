@@ -15,6 +15,7 @@ img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # conversion to RGB
 # image preprocessing methods to improve OCR accuracy
 img = preprocessing.deskew(img)  # deskews an image with a tilt
 img = preprocessing.adaptive_threshold_binarisation(img)  # binarise the image using gaussian adaptive threshold
+img = preprocessing.denoise(img)  # image denoising
 
 # use Tesseract to OCR the image
 text = pytesseract.image_to_string(img)

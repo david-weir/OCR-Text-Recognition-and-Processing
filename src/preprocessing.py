@@ -4,6 +4,7 @@ import numpy as np
 from skimage.color import rgb2gray
 from skimage.transform import rotate
 from deskew import determine_skew
+from matplotlib import pyplot as plt
 
 
 # gaussian adaptive threshold binarisation
@@ -12,6 +13,10 @@ def adaptive_threshold_binarisation(img):
 
     # calculate the local threshold value using Gaussian weighting and a mean value
     thresh = cv2.adaptiveThreshold(grey, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21, 4)
+
+    plt.subplot(121), plt.imshow(img)
+    plt.subplot(122), plt.imshow(thresh)
+    plt.show()
 
     return thresh
 
@@ -25,4 +30,27 @@ def deskew(image):
     # upright position - set resize to True to avoid cutting off
     # part of the image during rotation
 
+    plt.subplot(121), plt.imshow(image)
+    plt.subplot(122), plt.imshow(rotated)
+    plt.show()
+
     return rotated.astype(np.uint8)  # returns an unsigned integer (0-255) representing an image with RGB channels
+
+
+# smooth the image by removing patches of relatively high intensity using non-local means denoising
+def denoise(img):
+    # denoise the already greyscale/binary image
+    dst = cv2.fastNlMeansDenoising(img, None, 10, 7, 21)
+
+    plt.subplot(121), plt.imshow(img)
+    plt.subplot(122), plt.imshow(dst)
+    plt.show()
+
+    return dst
+
+# thinning method possibly for use in recognising handwriting later
+# def thin(img):
+#     kernel = np.ones((5, 5), np.uint8)
+#     erosion = cv2.erode(img, kernel, iterations=1)
+#
+#     return erosion
