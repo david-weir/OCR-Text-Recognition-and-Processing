@@ -1,6 +1,6 @@
 from langdetect import detect
 
-def detection(file):
+def detection_file(file):
     with open(file, "r") as language_file:
         text = language_file.read()
         try:
@@ -8,6 +8,12 @@ def detection(file):
         
         except:
             return False
+
+def detection_text(text):
+    try:
+        return detect(text)
+    except:
+        return False
 
 #print(detection('text.txt'))
     
