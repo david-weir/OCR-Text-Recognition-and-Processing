@@ -5,7 +5,7 @@ import sys
 import preprocessing
 
 # pytesseract path
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\admin\AppData\Local\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # OpenCV reads images as BGR not RGB
 # load the input image and convert it from BGR to RGB channel
