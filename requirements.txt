@@ -3,3 +3,4 @@ sentencepiece
 torch
 torchvision
 jellyfish
+langdetect
