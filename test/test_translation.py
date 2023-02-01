@@ -1,5 +1,5 @@
 import unittest
-from translation import *
+from src.translation import translate
 import jellyfish # need to install w pip
 import time
 
