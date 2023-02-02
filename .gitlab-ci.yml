@@ -13,12 +13,9 @@ build-job:
 test-job2:
   stage: test
   before_script:
-  - pip install -r requirements.txt
+    - pip install -r requirements.txt
   script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - python src/translation_test.py
+    - python -m unittest discover test "test*.py"
 
 deploy-prod:
   stage: deploy
