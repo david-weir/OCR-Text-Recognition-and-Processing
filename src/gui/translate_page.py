@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
-import upload_page
+import options_page
 import edit_page
 
 class TranslatePage(Frame):
@@ -53,5 +53,5 @@ class TranslatePage(Frame):
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text ="Next",
-               command = lambda : controller.show_frame(upload_page.UploadPage))
+               command = lambda : controller.show_frame(options_page.OptionsPage))
         next.pack(side='right', padx=8, pady=5)
