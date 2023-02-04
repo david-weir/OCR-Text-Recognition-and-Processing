@@ -53,7 +53,7 @@ class DetectionPage(Frame):
             message = Label(center, text="Failed to Detect Language.").place(relx=0.5, rely=0.4, anchor=CENTER)
             select_message = Label(center, text="Please Select:   ").place(relx=0.4, rely=0.5, anchor=CENTER)
             dropdown.place(relx=0.6, rely=0.5, anchor=CENTER)
-            b = Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
+            confirm = Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
         else:
             a = Label(center, text="Language Detected: {}".format("French")).place(relx=0.5, rely=0.4, anchor=CENTER)
             b = Button(center, text="Confirm").place(relx=0.5, rely=0.5, anchor=CENTER)

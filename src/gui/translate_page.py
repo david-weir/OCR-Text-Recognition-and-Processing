@@ -30,6 +30,7 @@ class TranslatePage(Frame):
         ]
 
         detected = "English"
+        options.remove(detected)
         
         # datatype of menu text
         clicked = StringVar()
@@ -41,9 +42,11 @@ class TranslatePage(Frame):
         dropdown = OptionMenu(center, clicked, *options)
         dropdown.config(width=7)
 
-        message = Label(center, text="English").place(relx=0.3, rely=0.5, anchor=CENTER)
+        message = Label(center, text=detected).place(relx=0.3, rely=0.5, anchor=CENTER)
         select_message = Label(center, text="To").place(relx=0.5, rely=0.5, anchor=CENTER)
         dropdown.place(relx=0.7, rely=0.5, anchor=CENTER)
+
+        confirm = Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
 
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(edit_page.EditPage))
