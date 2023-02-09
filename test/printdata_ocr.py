@@ -30,3 +30,7 @@ def print_ocr_testdata():
             # write to text file + close
             file1.write(text + "/n")
             file1.close()
+
+
+if __name__ == '__main__':
+    main()
