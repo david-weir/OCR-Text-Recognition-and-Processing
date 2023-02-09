@@ -11,11 +11,11 @@ def main():
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
     # path to the folder of images
-    folderpath = ".test/print text testing/data/"
+    folderpath = "./test/print text testing/data/"
 
     for folder in os.listdir(folderpath):
         # link to the file in which output needs to be stored
-        resultpath = ".test/print text testing/ocr/" + (folder + ".txt")
+        resultpath = "./test/print text testing/ocr/" + (folder + ".txt")
 
         # iterate through and OCR images in folder
         for image in os.listdir(os.path.join(folderpath, folder)):
