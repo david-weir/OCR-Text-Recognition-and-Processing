@@ -20,7 +20,7 @@ test-job2:
 test-printOCR:
   stage: test
   before_script:
-    - python print_tests.py
+    - python test/print_tests.py
   script:
     - python -m unittest discover test ocr_print.py
 
