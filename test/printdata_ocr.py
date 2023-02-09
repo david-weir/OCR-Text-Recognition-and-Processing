@@ -5,7 +5,7 @@ import pytesseract
 import os
 
 
-def print_ocr_testdata():
+def main():
 
     # pytesseract path
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
