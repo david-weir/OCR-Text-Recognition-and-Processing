@@ -5,7 +5,8 @@ import pytesseract
 import os
 
 
-def main():
+def print_ocr_testdata():
+
     # pytesseract path
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
@@ -29,7 +30,3 @@ def main():
             # write to text file + close
             file1.write(text + "/n")
             file1.close()
-
-
-if __name__ == '__main__':
-    main()
