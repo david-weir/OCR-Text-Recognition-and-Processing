@@ -8,7 +8,7 @@ import os
 def main():
 
     # pytesseract path
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
     # path to the folder of images
     folderpath = "./test/print text testing/data/"
