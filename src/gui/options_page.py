@@ -28,10 +28,19 @@ class OptionsPage(Frame):
         pdf_option = IntVar()
         mp3_option = IntVar()
 
-        Checkbutton(center, text="Convert to PDF", variable=pdf_option).place(relx=0.5, rely=0.4, anchor=CENTER)
-        Checkbutton(center, text="Convert to MP3", variable=mp3_option).place(relx=0.5, rely=0.5, anchor=CENTER)
+        Checkbutton(center, text="Convert to PDF", variable=pdf_option).place(relx=0.5, rely=0.3, anchor=CENTER)
+        Checkbutton(center, text="Convert to MP3", variable=mp3_option).place(relx=0.5, rely=0.4, anchor=CENTER)
 
-        Button(center, text="Confirm").place(relx=0.5, rely=0.7, anchor=CENTER)
+        Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
+
+        pdf_frame = tk.Frame(center, bg="red").pack(side='bottom', fill='both')
+        Button(pdf_frame, text="Confirm").place(relx=0.2, rely=0.5, anchor=CENTER)
+        
+        # pdf_filename = StringVar()
+        # name_label = Label(center, text='PDF filename:')
+        # name_label.place(relx=0.1, rely=0.9, anchor=CENTER)
+        # Entry(pdf_frame, textvariable=pdf_filename).place(relx=0.2, rely=0.5, anchor=CENTER)
+
 
         previous = Button(btm_frame, text="Back",
                    command = lambda : controller.show_frame(edit_page.EditPage))
