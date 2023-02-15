@@ -21,7 +21,7 @@ test-printOCR:
   stage: test
   before_script:
     - pip install -r requirements.txt
-    - pip install tesseract-ocr
+    - sudo apt install tesseract-ocr-spa-deu-fra
     - python test/printdata_ocr.py
   script:
     - python -m unittest discover test ocr_print.py
