@@ -8,6 +8,7 @@ import os
 def main():
 
     # pytesseract path
+    pytesseract.pytesseract.tesseract_cmd = 'tesseract'
 
     # path to the folder of images
     folderpath = "./test/print text testing/data/"
