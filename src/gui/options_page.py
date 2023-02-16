@@ -33,13 +33,25 @@ class OptionsPage(Frame):
 
         Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
 
-        pdf_frame = tk.Frame(center, bg="red").pack(side='bottom', fill='both')
-        Button(pdf_frame, text="Confirm").place(relx=0.2, rely=0.5, anchor=CENTER)
+        pdf_frame = tk.Frame(center, height=40)
+        pdf_frame.pack(side='bottom', fill='both')
         
-        # pdf_filename = StringVar()
-        # name_label = Label(center, text='PDF filename:')
-        # name_label.place(relx=0.1, rely=0.9, anchor=CENTER)
-        # Entry(pdf_frame, textvariable=pdf_filename).place(relx=0.2, rely=0.5, anchor=CENTER)
+        pdf_filename = StringVar()
+        name_label = Label(pdf_frame, text='PDF filename:')
+        name_label.pack(side='left')
+        Entry(pdf_frame, textvariable=pdf_filename).pack(side='left', padx=5)
+
+        Button(pdf_frame, text="Download").pack(side='right', padx=5)
+
+        audio_frame = tk.Frame(center, height=40)
+        audio_frame.pack(side='bottom', fill='both')
+        
+        audio_filename = StringVar()
+        audio_name_label = Label(audio_frame, text='AUD filename:')
+        audio_name_label.pack(side='left')
+        Entry(audio_frame, textvariable=audio_filename).pack(side='left', padx=5)
+
+        Button(audio_frame, text="Download").pack(side='right', padx=5)
 
 
         previous = Button(btm_frame, text="Back",
