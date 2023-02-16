@@ -16,7 +16,7 @@ class TestPrintOCR(unittest.TestCase):
         return normalised_score
 
     # edit distance test for Grimm's Fairy Tales
-    def grimms(self):
+    def test_grimms(self):
         with open("./test/print text testing/ocr/Grimm's Fairy Tales.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
