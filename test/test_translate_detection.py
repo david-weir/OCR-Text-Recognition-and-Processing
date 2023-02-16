@@ -2,7 +2,7 @@ import unittest
 import os
 from src.detection import detection_text, detection_file
 from src.googletranslation import translate
-import jellyfish # need to install w pip
+import jellyfish
 import time
 
 class TestDetectionTranslationIntegration(unittest.TestCase):
@@ -15,11 +15,11 @@ class TestDetectionTranslationIntegration(unittest.TestCase):
 
         return normalised_score
     
-    def test_fr_detection_file(self):
-        french_file = "janeeyre_fr.txt"
-        english_file = "janeeyre_en.txt"
+    def test_detect_translate(self):
+        french_file = "frenchtext.txt"
+        english_file = "englishtext.txt"
         fr_filepath = os.path.dirname(__file__) + "/" + french_file
-        en_filepath = os.path.dirname(__file__) + "/" + "englishtext.txt"
+        en_filepath = os.path.dirname(__file__) + "/" + english_file
 
         detected_lang = detection_file(fr_filepath)
         with open(fr_filepath, "r") as language_file:
