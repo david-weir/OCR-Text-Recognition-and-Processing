@@ -1,7 +1,7 @@
 # CI/CD pipeline tests for print text OCR
 import unittest
 import jellyfish
-import printdata
+import printdata_ocr
 
 
 class TestPrintOCR(unittest.TestCase):
