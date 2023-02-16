@@ -20,7 +20,7 @@ class TestPrintOCR(unittest.TestCase):
         with open("./test/print text testing/ocr/Grimms' Fairy Tales.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
-        with open("./test/print text testing/gr/Grimms' Fairy Tales by Jacob Grimm and Wilhelm Grimm.txt", 'r',
+        with open("./test/print text testing/ground texts/Grimms' Fairy Tales by Jacob Grimm and Wilhelm Grimm.txt", 'r',
                   encoding="latin-1") as f2:
             ground = f2.read().strip().replace('/n', '')
 
