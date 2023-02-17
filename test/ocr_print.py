@@ -17,7 +17,7 @@ class TestPrintOCR(unittest.TestCase):
 
     # edit distance test for Grimm's Fairy Tales
     def test_grimms(self):
-        with open("./test/print text testing/ocr/Grimms' Fairy Tales.txt", 'r', encoding="latin-1") as f1:
+        with open("./src/ocr_results/Grimms' Fairy Tales.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
         with open("./test/print text testing/ground texts/Grimms' Fairy Tales by Jacob Grimm and Wilhelm Grimm.txt", 'r',
@@ -33,7 +33,7 @@ class TestPrintOCR(unittest.TestCase):
 
 
     def test_drac(self):
-        with open("./test/print text testing/ocr/Dracula.txt", 'r', encoding="latin-1") as f1:
+        with open("./src/ocr_results/Dracula.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
         with open("./test/print text testing/ground texts/Dracula by Bram Stoker.txt", 'r',
@@ -49,7 +49,7 @@ class TestPrintOCR(unittest.TestCase):
 
 
     def test_gatsby(self):
-        with open("./test/print text testing/ocr/Great Gatsby.txt", 'r', encoding="latin-1") as f1:
+        with open("./src/ocr_results/Great Gatsby.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
         with open("./test/print text testing/ground texts/The Great Gatsby.txt", 'r',
@@ -65,7 +65,7 @@ class TestPrintOCR(unittest.TestCase):
 
 
     def test_randj(self):
-        with open("./test/print text testing/ocr/Romeo and Juliet, William Shakespeare.txt", 'r',
+        with open("./src/ocr_results/Romeo and Juliet, William Shakespeare.txt", 'r',
                   encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
@@ -82,7 +82,7 @@ class TestPrintOCR(unittest.TestCase):
 
 
     def test_oss(self):
-        with open("./test/print text testing/ocr/oss handbook.txt", 'r', encoding="latin-1") as f1:
+        with open("./src/ocr_results/oss handbook.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
 
         with open("./test/print text testing/ground texts/Simple Sabotage Field Manual by United States.txt", 'r',
