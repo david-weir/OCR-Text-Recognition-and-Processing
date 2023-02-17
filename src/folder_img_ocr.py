@@ -12,7 +12,7 @@ def main():
     # link to the file in which output needs to be stored
     for folder in os.listdir(folderpath):
         # link to the file in which output needs to be stored
-        resultpath = "./src/ocr_results" + (folder + ".txt")
+        resultpath = "./src/ocr_results/" + (folder + ".txt")
 
         # iterate through and OCR images in folder
         for image in os.listdir(os.path.join(folderpath, folder)):
