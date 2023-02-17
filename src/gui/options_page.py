@@ -27,31 +27,34 @@ class OptionsPage(Frame):
 
         pdf_option = IntVar()
         mp3_option = IntVar()
-
-        Checkbutton(center, text="Convert to PDF", variable=pdf_option).place(relx=0.5, rely=0.3, anchor=CENTER)
-        Checkbutton(center, text="Convert to MP3", variable=mp3_option).place(relx=0.5, rely=0.4, anchor=CENTER)
-
-        Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
-
         pdf_frame = tk.Frame(center, height=40)
-        pdf_frame.pack(side='bottom', fill='both')
-        
-        pdf_filename = StringVar()
-        name_label = Label(pdf_frame, text='PDF filename:')
-        name_label.pack(side='left')
-        Entry(pdf_frame, textvariable=pdf_filename).pack(side='left', padx=5)
-
-        Button(pdf_frame, text="Download").pack(side='right', padx=5)
-
         audio_frame = tk.Frame(center, height=40)
-        audio_frame.pack(side='bottom', fill='both')
-        
-        audio_filename = StringVar()
-        audio_name_label = Label(audio_frame, text='AUD filename:')
-        audio_name_label.pack(side='left')
-        Entry(audio_frame, textvariable=audio_filename).pack(side='left', padx=5)
 
-        Button(audio_frame, text="Download").pack(side='right', padx=5)
+        Checkbutton(center, text="Convert to PDF", variable=pdf_option, onvalue=1, offvalue=0).place(relx=0.5, rely=0.3, anchor=CENTER)
+        Checkbutton(center, text="Convert to MP3", variable=mp3_option, onvalue=1, offvalue=0).place(relx=0.5, rely=0.4, anchor=CENTER)
+
+        def show_options_frame():
+            if pdf_option.get() == 1 and not bool(pdf_frame.winfo_ismapped()):
+                pdf_frame.pack(side='bottom', fill='both')
+                
+                pdf_filename = StringVar()
+                name_label = Label(pdf_frame, text='PDF filename:')
+                name_label.pack(side='left')
+                Entry(pdf_frame, textvariable=pdf_filename).pack(side='left', padx=5)
+
+                Button(pdf_frame, text="Download").pack(side='right', padx=5)
+
+            if mp3_option.get() == 1 and not bool(audio_frame.winfo_ismapped()):
+                audio_frame.pack(side='bottom', fill='both')
+                
+                audio_filename = StringVar()
+                audio_name_label = Label(audio_frame, text='mp3 filename:')
+                audio_name_label.pack(side='left')
+                Entry(audio_frame, textvariable=audio_filename).pack(side='left', padx=5)
+
+                Button(audio_frame, text="Download").pack(side='right', padx=5)
+        
+        Button(center, text="Confirm", command= lambda: show_options_frame()).place(relx=0.5, rely=0.6, anchor=CENTER)
 
 
         previous = Button(btm_frame, text="Back",
