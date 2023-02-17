@@ -31,7 +31,7 @@ class TestPrintOCR(unittest.TestCase):
 
         self.assertGreaterEqual(edit_dist, 0.9, "Grimm's Fairy Tales Test FAILED - edit distance below 0.9")
 
-
+    # edit distance test for Bram Stoker's Dracula
     def test_drac(self):
         with open("./src/ocr_results/Dracula.txt", 'r', encoding="latin-1") as f1:
             ocr = f1.read().strip().replace('/n', '')
