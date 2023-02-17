@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
-from extras import *
 from upload_page import *
 from detection_page import *
 from edit_page import *

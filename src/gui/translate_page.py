@@ -4,6 +4,9 @@ import tkinter as tk
 import options_page
 import edit_page
 
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 class TranslatePage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)

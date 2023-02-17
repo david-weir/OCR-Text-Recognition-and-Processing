@@ -1,9 +1,12 @@
 from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
-#from src.detection import *
 import edit_page
 import upload_page
+
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from detection import *
 
 class DetectionPage(Frame):
     
