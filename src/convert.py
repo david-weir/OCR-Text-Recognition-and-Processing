@@ -2,18 +2,32 @@ from gtts import gTTS
 import os
 from fpdf import FPDF
 import textwrap
+from pygame import mixer
+import time
 
-def convert_to_mp3(lang, file):
+def download_mp3(lang, file):
     with open(file) as f:
         text = f.read()
 
     recording = gTTS(text=text, lang=lang, slow=False)
-    recording.save("speech.mp3")
+    recording.save("test.mp3")
 
-    os.system("mpg321 speech.mp3")
+    # os.system("mpg321 speech.mp3")
+def play_mp3(lang, file):
+    with open(file) as f:
+        text = f.read()
+
+    recording = gTTS(text=text, lang=lang, slow=False, tld='ie')
+    recording.save("test.mp3")
+    
+    mixer.init()
+    mixer.music.load("test.mp3")
+    mixer.music.play(0)
+    # time.sleep(2)
+    # os.system("mpg321 speech.mp3")
 
 
-def covert_to_pdf(file):
+"""def covert_to_pdf(file):
     pdf = FPDF()  
     
     # Add a page
@@ -31,10 +45,10 @@ def covert_to_pdf(file):
         pdf.cell(w=200, h=10, txt = x, ln = 1, align = 'L')
     
     # save the pdf with name .pdf
-    pdf.output("mygfg.pdf") 
+    pdf.output("mygfg.pdf") """
 
 # convert_to_mp3("en", "text.txt")
-covert_to_pdf("text.txt")
+# covert_to_pdf("text.txt")
 # https://stackoverflow.com/questions/10112244/convert-plain-text-to-pdf-in-python
 def convert_to_pdf(text, filename):
     a4_width_mm = 210
