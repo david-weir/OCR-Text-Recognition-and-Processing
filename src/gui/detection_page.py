@@ -3,6 +3,7 @@ from tkinter.ttk import *
 import tkinter as tk
 import edit_page
 import upload_page
+from textModel import *
 
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -51,22 +52,25 @@ class DetectionPage(Frame):
             "de": "German"
         }
 
-        detected = True #will replace with detection function
+        detected = detection_text(text_model.get_text()) #will replace with detection function
         if detected == False:
             message = Label(center, text="Failed to Detect Language.").place(relx=0.5, rely=0.4, anchor=CENTER)
             select_message = Label(center, text="Please Select:   ").place(relx=0.4, rely=0.5, anchor=CENTER)
             dropdown.place(relx=0.6, rely=0.5, anchor=CENTER)
-            confirm = Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
+            confirm = Button(center, text="Confirm", command=lambda:text_model.set_src_language(clicked)).place(relx=0.5, rely=0.6, anchor=CENTER)
+            print(text_model.get_src_language())
         else:
-            a = Label(center, text="Language Detected: {}".format("French")).place(relx=0.5, rely=0.4, anchor=CENTER)
+            text_model.set_src_language(detected)
+            a = Label(center, text="Language Detected: {}".format(lang_codes[detected])).place(relx=0.5, rely=0.4, anchor=CENTER)
             b = Button(center, text="Confirm").place(relx=0.5, rely=0.5, anchor=CENTER)
+            print(text_model.get_src_language())
 
 
 
         previous = Button(btm_frame, text="Back",
-                   command = lambda : controller.show_frame(upload_page.UploadPage))
+                   command = lambda:controller.show_frame(upload_page.UploadPage))
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text="Next",
-               command = lambda : controller.show_frame(edit_page.EditPage))
+               command = lambda:controller.show_frame(edit_page.EditPage))
         next.pack(side='right', padx=8, pady=5)

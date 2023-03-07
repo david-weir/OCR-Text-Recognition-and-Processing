@@ -1,8 +1,10 @@
+from pydoc import cli
 from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
 import options_page
 import edit_page
+from textModel import *
 
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -32,6 +34,12 @@ class TranslatePage(Frame):
             "German"
         ]
 
+        lang_codes = {
+            "English": "en",
+            "French": "fr",
+            "German": "de"
+        }
+
         detected = "English"
         options.remove(detected)
         
@@ -49,7 +57,7 @@ class TranslatePage(Frame):
         select_message = Label(center, text="To").place(relx=0.5, rely=0.5, anchor=CENTER)
         dropdown.place(relx=0.7, rely=0.5, anchor=CENTER)
 
-        confirm = Button(center, text="Confirm").place(relx=0.5, rely=0.6, anchor=CENTER)
+        confirm = Button(center, text="Confirm", command=lambda:text_model.set_dst_language(lang_codes[clicked])).place(relx=0.5, rely=0.6, anchor=CENTER)
 
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(edit_page.EditPage))

@@ -1,8 +1,10 @@
+from calendar import c
 from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
 import translate_page
 import detection_page
+from textModel import *
 
 class EditPage(Frame):
     def __init__(self, parent, controller):
@@ -22,12 +24,12 @@ class EditPage(Frame):
         center.grid(row=1, sticky="nsew")
         btm_frame.grid(row=3, sticky="ew")
 
-        center.rowconfigure(0, minsize=900, weight=1)
-        center.columnconfigure(1, minsize=900, weight=1)
+        center.rowconfigure(0, minsize=450, weight=1)
+        center.columnconfigure(1, weight=1) #, minsize=400,
 
         txt_edit = tk.Text(center)
         fr_buttons = tk.Frame(center, relief=tk.RAISED, bd=2)
-        btn_open = tk.Button(fr_buttons, text="Save")
+        btn_open = tk.Button(fr_buttons, text="Save", command=lambda:text_model.set_text(txt_edit.get(1.0, tk.END)))
         #btn_save = tk.Button(fr_buttons, text="Save As...")
 
         btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
@@ -35,6 +37,10 @@ class EditPage(Frame):
 
         fr_buttons.grid(row=0, column=0, sticky="ns")
         txt_edit.grid(row=0, column=1, sticky="nsew")
+        # txt_edit.rowconfigure(0, minsize=250, weight=1)
+
+        text = text_model.get_text()
+        txt_edit.insert(tk.END, text)
 
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(detection_page.DetectionPage))

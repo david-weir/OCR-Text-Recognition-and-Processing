@@ -5,6 +5,7 @@ from extras import *
 import detection_page
 import edit_page
 import config
+from textModel import *
 
 class UploadPage(Frame):
     def __init__(self, parent, controller):
@@ -38,7 +39,7 @@ class UploadPage(Frame):
         label = Label(top_frame, text="Upload Documents", font=("Verdana", 20))
         label.place(relx=.5, rely=.5,anchor= CENTER)
 
-        pdf_upload = Button(ctr_left, text ="Upload PDFs", command = lambda:open_pdf())
+        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf")])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -61,10 +62,12 @@ class UploadPage(Frame):
         def upload_type():
             if clicked.get() == "Printed":
                 open_images()
+                text_model.set_format("printed image")
             elif clicked.get() == "Handwritten":
                 open_images()
+                text_model.set_format("handwritten image")
 
-        caller_button = Button(ctr_right, text=config.glob, command=lambda: upload_type())
+        caller_button = Button(ctr_right, text="Select", command=lambda:upload_type())
         caller_button.place(relx=.5, rely=.6, anchor=CENTER)
 
         previous = Button(btm_frame, text ="Back",
