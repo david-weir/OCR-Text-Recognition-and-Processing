@@ -5,10 +5,39 @@ import tkinter.font as font
 from tkinter import filedialog
 from textModel import *
 from pathlib import Path
+from mutagen.mp3 import MP3
+from pydub import AudioSegment
 
+# import sys, os
+# sys.path.append("~/Users/roisinorourke/audio-orchestrator-ffmpeg/bin/")
 
 # global skipped
 # skipped = False
+# def split_track(recording, track_list):
+    # track = AudioSegment.from_mp3(str(Path.cwd()) + "/" + track_list.get(ACTIVE))
+    # length = len(track)
+
+    # segment = 
+    # n = 3000
+    # x = [track[i:i + n] for i in range(0, length, n)]
+    # y = track[length / 2:]
+    # mp3 = MP3(recording)
+    # length = mp3.info.length
+    # start = 0
+    # segment = 5 #60000
+    # num = length / segment
+    # print(length, num)
+    # for i in range(1, int(num)):
+    #     part = mp3[start:segment]
+    #     part.export("part_{}".format(str(i)),format="mp3")
+    #     track_list.insert(END, part)
+    #     print(part)
+    #     start = segment
+    #     segment+=5
+    # n = 5000
+    # x = [mp3[i:i + n] for i in range(0, length*1000, n)]
+    # print(x, length)
+
 
 def play(track_list):
     # path = str(Path.cwd()) + "/" + track_list.get(ACTIVE)
@@ -137,7 +166,7 @@ def popup_window():
     skip_button.bind('<Button>', lambda x: skip_track(track_list))
     play_button.bind('<Button>', lambda x: play(track_list))
     pause_button.bind('<Button>', lambda x: pause(paused))
-    stop_button.bind('<Button>', lambda x: stop(track_list))
+    stop_button.bind('<Button>', lambda x: split_track("speech.mp3", track_list))
 
     rewind_button.grid(row=0, column=0, padx=10)
     skip_button.grid(row=0, column=1, padx=10)
