@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
 from extras import *
-import detection_page
 import edit_page
 import config
 from textModel import *
@@ -75,5 +74,5 @@ class UploadPage(Frame):
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text ="Next",
-               command = lambda : controller.show_frame(detection_page.DetectionPage))
+               command = lambda : controller.show_frame(edit_page.EditPage))
         next.pack(side='right', padx=8, pady=5)

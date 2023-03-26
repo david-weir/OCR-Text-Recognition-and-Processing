@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
 import translate_page
-import detection_page
+import upload_page
 from textModel import *
 
 import os, sys
@@ -91,7 +91,7 @@ class EditPage(Frame):
         txt_edit.insert(tk.END, text)
 
         previous = Button(btm_frame, text ="Back",
-                   command = lambda : controller.show_frame(detection_page.DetectionPage))
+                   command = lambda : controller.show_frame(upload_page.UploadPage))
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text ="Next",

@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
 from upload_page import *
-from detection_page import *
 from edit_page import *
 from translate_page import *
 from options_page import *
@@ -30,7 +29,7 @@ class OCRApp(Tk):
 
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (UploadPage, DetectionPage, EditPage, TranslatePage, OptionsPage):
+        for F in (UploadPage, EditPage, TranslatePage, OptionsPage):
             frame = F(container, self)
             self.frames[F] = frame
 
