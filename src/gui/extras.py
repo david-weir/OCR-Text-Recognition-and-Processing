@@ -1,8 +1,38 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import askopenfile 
-import time
-import fitz # install PyMuPDF
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from io import StringIO
+
+def convert_pdf_to_txt(path):
+    resource_mgr = PDFResourceManager()
+    ret_data = StringIO()
+    device = TextConverter(resource_mgr, ret_data, codec='utf-8', laparams=LAParams())
+    input_file = open(path, 'rb')
+    interpreter = PDFPageInterpreter(resource_mgr, device)
+    password = ""
+    maxpages = 0
+    caching = True
+    pagenos=set()
+
+    for page in PDFPage.get_pages(input_file, pagenos, maxpages=maxpages, password=password, caching=caching, check_extractable=True):
+        interpreter.process_page(page)
+
+    text = ret_data.getvalue()
+
+    with open('output.txt', 'w') as f:
+        f.write(text)
+
+    input_file.close()
+    device.close()
+    ret_data.close()
+    print(text)
+    return text
+
+convert_pdf_to_txt("../output.pdf")
 
 def open_pdf():
     file_path = askopenfile(mode='r', filetypes=[('PDFs', '*pdf')])
@@ -20,20 +50,3 @@ def open_images():
     file_path = askopenfile(mode='r', filetypes=[('Image Files', ['*jpeg', '*png'])])
     if file_path is not None:
         return file_path
-
-"""def change_page(self, prev, next, controller, row):
-    change_page = Frame(self, bg='red')
-    change_page.grid(row=3, column=1)
-    
-    prev_page = Button(change_page, text ="Page 1",
-                command = lambda : controller.show_frame(prev))
-
-    # putting the button in its place by
-    # using grid
-    prev_page.grid(row = row, column = 1, padx = 10, pady = 10)
-
-    ## button to show frame 2 with text layout2
-    next_page = Button(change_page, text ="Page 2",
-                command = lambda : controller.show_frame(next))
-    
-    next_page.grid(row = row, column = 2, padx = 10, pady = 10)"""
