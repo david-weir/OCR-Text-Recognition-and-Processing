@@ -4,6 +4,7 @@ class textModel:
         self.dst_lang = dst_lang
         self.format = format
         self.text = "this is the sample piece of text to show that it is working."
+        self.textfile = ""
 
     def set_src_language(self, language):
         self.src_lang = language
@@ -28,5 +29,11 @@ class textModel:
 
     def set_text(self, text):
         self.text = text
+
+    def get_textfile(self):
+        return self.textfile
+
+    def set_textfile(self, textfile):
+        self.textfile = textfile
 
 text_model = textModel()
