@@ -28,7 +28,9 @@ class textModel:
         return self.text
 
     def set_text(self, text):
-        self.text = text
+        with open(self.get_textfile()) as input_file:
+            head = [next(input_file) for n in range(5)]
+        self.text = head
 
     def get_textfile(self):
         return self.textfile
