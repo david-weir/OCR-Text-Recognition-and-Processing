@@ -17,6 +17,13 @@ test-job2:
   script:
     - python -m unittest discover test "test*.py"
 
+test-printOCR:
+  stage: test
+  before_script:
+    - pip install -r requirements.txt
+  script:
+    - python -m unittest discover test ocr_print.py
+
 deploy-prod:
   stage: deploy
   script:
