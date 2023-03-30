@@ -129,7 +129,7 @@ class EditPage(Frame):
         }
         select_message = Label(top_frame, text="Please Select:   ")
         detected = detection_text(text_model.get_text())
-        print(text_model.get_text())
+        
         if detected == False:
             print("false")
             message = Label(top_frame, text="Failed to Detect Language.").pack(side='left', padx=5)
