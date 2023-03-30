@@ -24,13 +24,13 @@ class textModel:
     def get_format(self):
         return self.format
 
+    def set_text(self):
+        with open(self.get_textfile()) as input_file:
+            head = [next(input_file).strip() for n in range(5)]
+        self.text = " ".join(head)
+
     def get_text(self):
         return self.text
-
-    def set_text(self, text):
-        with open(self.get_textfile()) as input_file:
-            head = [next(input_file) for n in range(5)]
-        self.text = head
 
     def get_textfile(self):
         return self.textfile

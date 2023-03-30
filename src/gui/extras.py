@@ -31,6 +31,7 @@ def open_pdf():
             f.write(text)
         
         text_model.set_textfile('output.txt')
+        text_model.set_text()
 
         file_path.close()
         device.close()
