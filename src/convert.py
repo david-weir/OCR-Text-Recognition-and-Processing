@@ -10,7 +10,10 @@ def download_mp3(lang, file):
         text = f.read()
 
     recording = gTTS(text=text, lang=lang, slow=False)
-    recording.save("test.mp3")
+    file_name = file.replace(".txt", "")
+    recording.save("{}.mp3".format(file_name))
+
+    return "{}.mp3".format(file_name)
 
     # os.system("mpg321 speech.mp3")
 def play_mp3(lang, file):
@@ -56,11 +59,11 @@ def convert_to_pdf(text, filename):
 
     pdf.output(filename, 'F')
 
-input_filename = 'text.txt'
-output_filename = 'output.pdf'
-file = open(input_filename)
-text = file.read()
-file.close()
+# input_filename = 'text.txt'
+# output_filename = 'output.pdf'
+# file = open(input_filename)
+# text = file.read()
+# file.close()
 # convert_to_pdf(text, output_filename)
 
 

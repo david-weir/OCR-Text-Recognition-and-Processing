@@ -8,6 +8,10 @@ from pathlib import Path
 from mutagen.mp3 import MP3
 from pydub import AudioSegment
 
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import convert
+
 # import sys, os
 # sys.path.append("~/Users/roisinorourke/audio-orchestrator-ffmpeg/bin/")
 
@@ -132,14 +136,18 @@ def previous_track(track_list):
 #         if event.type == self.SONG_END:
 #             self.next_song()
 
-def popup_window():
+def popup_window(file):
     window = Toplevel()
     mixer.init()
 
     track_list = Listbox(window, bg='black', fg='white', width=60, selectbackground='green', selectforeground='black')
     track_list.pack(pady=20)
-    track_list.insert(END, "test.mp3")
-    track_list.insert(END, "speech.mp3")
+
+    mp3 = text_model.get_textfile()
+    tracks = convert.split_txtfile(mp3)
+    for track in tracks:
+        rec = convert.download_mp3("en", track)
+        track_list.insert(END, rec)
 
     rewind_btn = PhotoImage(file='images/rewind.png') #, height=30, width=30
     play_btn = PhotoImage(file='images/play.png')
@@ -166,7 +174,7 @@ def popup_window():
     skip_button.bind('<Button>', lambda x: skip_track(track_list))
     play_button.bind('<Button>', lambda x: play(track_list))
     pause_button.bind('<Button>', lambda x: pause(paused))
-    stop_button.bind('<Button>', lambda x: split_track("speech.mp3", track_list))
+    stop_button.bind('<Button>', lambda x: stop(track_list))
 
     rewind_button.grid(row=0, column=0, padx=10)
     skip_button.grid(row=0, column=1, padx=10)

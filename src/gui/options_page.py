@@ -56,7 +56,7 @@ class OptionsPage(Frame):
                 Entry(audio_frame, textvariable=audio_filename).pack(side='left', padx=5)
 
                 Button(audio_frame, text="Download").pack(side='right', padx=5)
-                Button(audio_frame, text="Play", command=lambda: mp3player.popup_window()).pack(side='right', padx=5)
+                Button(audio_frame, text="Play", command=lambda: mp3player.popup_window(audio_filename.get())).pack(side='right', padx=5)
         
         Button(center, text="Confirm", command= lambda: show_options_frame()).place(relx=0.5, rely=0.6, anchor=CENTER)
 
