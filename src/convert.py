@@ -61,4 +61,20 @@ output_filename = 'output.pdf'
 file = open(input_filename)
 text = file.read()
 file.close()
-convert_to_pdf(text, output_filename)
+# convert_to_pdf(text, output_filename)
+
+
+def split_txtfile(txtfile):
+    with open(txtfile, 'r') as f:
+        words = f.read()
+        words_lst = words.split()
+        files = []
+        chunk = 200
+        for c, i in enumerate(range(0, len(words_lst), chunk)):
+                with open("part_{}.txt".format(c+1), "w") as out:
+                    out.write(" ".join(words_lst[i:i+chunk]))
+                    files.append("part_{}.txt".format(c+1))
+
+        return files
+
+# split_txtfile('text.txt')
