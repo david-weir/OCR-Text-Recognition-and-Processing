@@ -45,11 +45,12 @@ def convert_to_pdf(text, filename):
     pdf.set_auto_page_break(True, margin=margin_bottom_mm)
     pdf.set_margins(20, 20, 20)
     pdf.add_page()
-    pdf.set_font(family='Arial', size=fontsize_pt)
+    pdf.add_font('DejaVu', '', 'fonts/DejaVuSans.ttf', uni=True)
+    pdf.set_font('DejaVu', '', 12)
     splitted = text.split('\n')
 
     for line in splitted:
-        lines = textwrap.wrap(line, 85)
+        lines = textwrap.wrap(line, 75)
 
         if len(lines) == 0:
             pdf.ln()
