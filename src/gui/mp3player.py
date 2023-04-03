@@ -197,8 +197,8 @@ def popup_window(file):
     rewind_button.bind('<Button>', lambda x: previous(track_list, playlist))
     skip_button.bind('<Button>', lambda x: skip(track_list, playlist))
     # play_button.bind('<Button>', lambda x: play(track_list))
-    pause_button.bind('<Button>', lambda x: pause)
-    stop_button.bind('<Button>', lambda x: stop(track_list))
+    pause_button.bind('<Button>', lambda x: pause) # isnt working for some reason
+    stop_button.bind('<Button>', lambda x: stop(track_list)) # doesnt do anything
 
     rewind_button.grid(row=0, column=0, padx=10)
     skip_button.grid(row=0, column=1, padx=10)
@@ -212,8 +212,12 @@ def popup_window(file):
     button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), window.destroy()})
     button_close.pack(fill='x')
 
+    """move into start playing function?"""
     mixer.music.load(playlist[current_track])
     mixer.music.play()
+
+    track_list.activate(current_track)
+    track_list.selection_set(current_track, last=None)
 
     while playing == True:
         # Check if the current song has finished playing
