@@ -12,60 +12,9 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import convert
 
-# import sys, os
-# sys.path.append("~/Users/roisinorourke/audio-orchestrator-ffmpeg/bin/")
 
-# global skipped
-# skipped = False
-# def split_track(recording, track_list):
-    # track = AudioSegment.from_mp3(str(Path.cwd()) + "/" + track_list.get(ACTIVE))
-    # length = len(track)
+"""def play(track_list):
 
-    # segment = 
-    # n = 3000
-    # x = [track[i:i + n] for i in range(0, length, n)]
-    # y = track[length / 2:]
-    # mp3 = MP3(recording)
-    # length = mp3.info.length
-    # start = 0
-    # segment = 5 #60000
-    # num = length / segment
-    # print(length, num)
-    # for i in range(1, int(num)):
-    #     part = mp3[start:segment]
-    #     part.export("part_{}".format(str(i)),format="mp3")
-    #     track_list.insert(END, part)
-    #     print(part)
-    #     start = segment
-    #     segment+=5
-    # n = 5000
-    # x = [mp3[i:i + n] for i in range(0, length*1000, n)]
-    # print(x, length)
-
-
-def play(track_list):
-    # path = str(Path.cwd()) + "/" + track_list.get(ACTIVE)
-    # global skipped
-    # current = track_list.curselection()
-    # curr = current
-    # print(current, current[0])
-    # mixer.music.load(path)
-    # mixer.music.play(loops=0)
-    # while mixer.music.get_busy():   
-    #    time.Clock().tick(1)
-    # for track in range(current[0]+1, track_list.size()):
-    #     if skipped == True:
-    #         break
-    #     path = str(Path.cwd()) + "/" + track_list.get(track)
-    #     print(path, track)
-    #     mixer.music.load(path)
-    #     mixer.music.play(loops=0)
-    #     # # curr = curr[0]+1
-    #     while mixer.music.get_busy():   
-    #         time.Clock().tick(1)
-    #     skip_track(track_list)
-    # skipped = False
-    # mixer.music.set_endevent(path.SONG_END)
     song = track_list.get(ACTIVE)
     track = str(Path.cwd()) + "/" + song
 
@@ -77,6 +26,8 @@ def play(track_list):
 
 global paused
 paused = False
+current_song = 0
+playing = True
 
 def pause(is_paused):
 	global paused
@@ -124,30 +75,103 @@ def previous_track(track_list):
 
     track_list.selection_clear(0, END)
     track_list.activate(prev_one)
-    track_list.selection_set(prev_one, last=None)
+    track_list.selection_set(prev_one, last=None)"""
 
-# def check_music():
-#     """
-#     Listens to END_MUSIC event and triggers next song to play if current 
-#     song has finished
-#     :return: None
-#     """
-#     for event in event.get():
-#         if event.type == self.SONG_END:
-#             self.next_song()
+paused = False
+current_track = 0
+playing = True
+
+def play(index, playlist):
+    global current_track
+    current_track = index
+    # Load and play the selected song
+    mixer.music.load(playlist[current_track])
+    mixer.music.play()
+
+# Define a function to play the next song in the playlist
+def play_next_track(track_list, playlist):
+    global current_track
+    current_track += 1
+    if current_track >= len(playlist):
+        # Restart the playlist if we've reached the end
+        current_track = 0
+    # Load and play the next song
+    mixer.music.load(playlist[current_track])
+    mixer.music.play()
+
+    track_list.selection_clear(0, tk.END)
+    track_list.activate(current_track)
+    track_list.selection_set(current_track, last=None)
+
+# Define a function to skip to the next song in the playlist
+def skip(track_list, playlist):
+    # Stop the current song
+    mixer.music.stop()
+    # Play the next song in the playlist
+    play_next_track(track_list, playlist)
+
+# Define a function to go back to the previous song in the playlist
+def previous(track_list, playlist):
+    # Stop the current song
+    mixer.music.stop()
+    # Go back to the previous song in the playlist
+    global current_track
+    current_track -= 1
+    """change this"""
+    if current_track < 0:
+        # Go to the last song in the playlist if we're at the beginning
+        current_track = len(playlist) - 1
+    # Load and play the previous song
+    mixer.music.load(playlist[current_track])
+    mixer.music.play()
+
+    track_list.selection_clear(0, tk.END)
+    track_list.activate(current_track)
+    track_list.selection_set(current_track, last=None)
+
+# Define a function to pause the current song
+def pause():
+    global paused
+    if not paused:
+        mixer.music.pause()
+        paused = True
+    else:
+        mixer.music.unpause()
+        paused = False
+
+def select_track(track_list, playlist): # event, 
+    selection = track_list.curselection()
+    if selection:
+        # Stop the current song
+        mixer.music.stop()
+        # Play the selected song
+        play(selection[0], playlist)
+
+def stop(track_list):
+    mixer.music.stop()
+    track_list.selection_clear(ACTIVE)
+
+def quit_mp3player():
+    global playing
+    playing = False
+    mixer.music.stop()
 
 def popup_window(file):
     window = Toplevel()
     mixer.init()
-
+    # global playing
     track_list = Listbox(window, bg='black', fg='white', width=60, selectbackground='green', selectforeground='black')
-    track_list.pack(pady=20)
 
+    playlist = []
     mp3 = text_model.get_textfile()
     tracks = convert.split_txtfile(mp3)
     for track in tracks:
-        rec = convert.download_mp3("en", track)
+        rec = convert.download_mp3("en", track) #language
         track_list.insert(END, rec)
+        playlist.append(rec)
+
+    track_list.pack(pady=20)
+    track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list=track_list, playlist=playlist))
 
     rewind_btn = PhotoImage(file='images/rewind.png') #, height=30, width=30
     play_btn = PhotoImage(file='images/play.png')
@@ -170,10 +194,10 @@ def popup_window(file):
     pause_button.image = pause_btn
     stop_button.image = stop_btn
 
-    rewind_button.bind('<Button>', lambda x: previous_track(track_list))
-    skip_button.bind('<Button>', lambda x: skip_track(track_list))
-    play_button.bind('<Button>', lambda x: play(track_list))
-    pause_button.bind('<Button>', lambda x: pause(paused))
+    rewind_button.bind('<Button>', lambda x: previous(track_list, playlist))
+    skip_button.bind('<Button>', lambda x: skip(track_list, playlist))
+    # play_button.bind('<Button>', lambda x: play(track_list))
+    pause_button.bind('<Button>', lambda x: pause)
     stop_button.bind('<Button>', lambda x: stop(track_list))
 
     rewind_button.grid(row=0, column=0, padx=10)
@@ -182,5 +206,21 @@ def popup_window(file):
     pause_button.grid(row=0, column=3, padx=10)
     stop_button.grid(row=0, column=4, padx=10)
 
-    button_close = tk.Button(window, text="Close", command=window.destroy)
+    current_track_label = tk.Label(controls, text="Current Song: " + playlist[current_track])
+    current_track_label.grid(row=1, column=0)
+
+    button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), window.destroy()})
     button_close.pack(fill='x')
+
+    mixer.music.load(playlist[current_track])
+    mixer.music.play()
+
+    while playing == True:
+        # Check if the current song has finished playing
+        if not mixer.music.get_busy() and not paused:
+            # Play the next song in the playlist
+            play_next_track(track_list, playlist)
+        # Update the current song label
+        current_track_label.config(text="Currently Playing: " + playlist[current_track])
+        # Update the GUI
+        window.update()

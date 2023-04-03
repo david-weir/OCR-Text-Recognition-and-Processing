@@ -73,7 +73,7 @@ def split_txtfile(txtfile):
         words = f.read()
         words_lst = words.split()
         files = []
-        chunk = 200
+        chunk = 100
         for c, i in enumerate(range(0, len(words_lst), chunk)):
                 with open("part_{}.txt".format(c+1), "w") as out:
                     out.write(" ".join(words_lst[i:i+chunk]))
