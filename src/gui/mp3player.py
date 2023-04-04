@@ -6,76 +6,11 @@ from tkinter import filedialog
 from textModel import *
 from pathlib import Path
 from mutagen.mp3 import MP3
-from pydub import AudioSegment
+# from pydub import AudioSegment
 
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import convert
-
-
-"""def play(track_list):
-
-    song = track_list.get(ACTIVE)
-    track = str(Path.cwd()) + "/" + song
-
-    mixer.music.load(track)
-    mixer.music.play(loops=0)
-    next = track_list.curselection()[0]+1
-    mixer.music.queue(str(Path.cwd()) + "/" + track_list.get(next))
-    # mixer.music.set_endevent(song.SONG_END)
-
-global paused
-paused = False
-current_song = 0
-playing = True
-
-def pause(is_paused):
-	global paused
-	paused = is_paused
-
-	if paused:
-		mixer.music.unpause()
-		paused = False
-	else:
-		mixer.music.pause()
-		paused = True
-
-def stop(track_list):
-    mixer.music.stop()
-    track_list.selection_clear(ACTIVE)
-
-def skip_track(track_list):
-    # Get the current song tuple number
-    next_one = track_list.curselection() 
-    # Add one to the current song number
-    next_one = next_one[0]+1
-    #Grab song title from playlist
-    # add directory structure and mp3 to song title
-    path = str(Path.cwd()) + "/" + track_list.get(next_one)
-    # Load and play song
-    mixer.music.load(path)
-    mixer.music.play(loops=0)
-
-    track_list.selection_clear(0, END)
-    track_list.activate(next_one)
-    track_list.selection_set(next_one, last=None)
-    # skipped = True
-
-def previous_track(track_list):
-    # Get the current song tuple number
-    prev_one = track_list.curselection() 
-    # Add one to the current song number
-    prev_one = prev_one[0]-1
-    #Grab song title from playlist
-    # add directory structure and mp3 to song title
-    path = str(Path.cwd()) + "/" + track_list.get(prev_one)
-    # Load and play song
-    mixer.music.load(path)
-    mixer.music.play(loops=0)
-
-    track_list.selection_clear(0, END)
-    track_list.activate(prev_one)
-    track_list.selection_set(prev_one, last=None)"""
 
 paused = False
 current_track = 0
@@ -140,12 +75,12 @@ def pause():
         paused = False
 
 def select_track(track_list, playlist): # event, 
-    selection = track_list.curselection()
-    if selection:
+    track = track_list.curselection()[0]
+    if track:
         # Stop the current song
         mixer.music.stop()
         # Play the selected song
-        play(selection[0], playlist)
+        play(track, playlist)
 
 def stop(track_list):
     mixer.music.stop()
@@ -158,19 +93,24 @@ def quit_mp3player():
 
 def popup_window(file):
     window = Toplevel()
+    window.title("MP3 player")
     mixer.init()
     # global playing
-    track_list = Listbox(window, bg='black', fg='white', width=60, selectbackground='green', selectforeground='black')
+    track_list = Listbox(window, bg='black', fg='white', width=50, selectbackground='green', selectforeground='black')
 
     playlist = []
     mp3 = text_model.get_textfile()
     tracks = convert.split_txtfile(mp3)
     for track in tracks:
         rec = convert.download_mp3("en", track) #language
-        track_list.insert(END, rec)
+        if file:
+            name = "{} - {}".format(file, rec)
+            track_list.insert(END, name)
+        else:
+            track_list.insert(END, rec)
         playlist.append(rec)
 
-    track_list.pack(pady=20)
+    track_list.pack(pady=20, padx=20)
     track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list=track_list, playlist=playlist))
 
     rewind_btn = PhotoImage(file='images/rewind.png') #, height=30, width=30
@@ -197,20 +137,20 @@ def popup_window(file):
     rewind_button.bind('<Button>', lambda x: previous(track_list, playlist))
     skip_button.bind('<Button>', lambda x: skip(track_list, playlist))
     # play_button.bind('<Button>', lambda x: play(track_list))
-    pause_button.bind('<Button>', lambda x: pause) # isnt working for some reason
-    stop_button.bind('<Button>', lambda x: stop(track_list)) # doesnt do anything
+    pause_button.bind('<Button>', lambda x: pause())
+    # stop_button.bind('<Button>', lambda x: stop(track_list)) # doesnt do anything
 
     rewind_button.grid(row=0, column=0, padx=10)
-    skip_button.grid(row=0, column=1, padx=10)
-    play_button.grid(row=0, column=2, padx=10)
-    pause_button.grid(row=0, column=3, padx=10)
-    stop_button.grid(row=0, column=4, padx=10)
+    skip_button.grid(row=0, column=2, padx=10)
+    # play_button.grid(row=0, column=2, padx=10)
+    pause_button.grid(row=0, column=1, padx=10)
+    # stop_button.grid(row=0, column=4, padx=10)
 
-    current_track_label = tk.Label(controls, text="Current Song: " + playlist[current_track])
-    current_track_label.grid(row=1, column=0)
+    current_track_label = tk.Label(window, text="Currently Playing: " + file + " - " + playlist[current_track])
+    current_track_label.pack()
 
     button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), window.destroy()})
-    button_close.pack(fill='x')
+    button_close.pack(pady=10)
 
     """move into start playing function?"""
     mixer.music.load(playlist[current_track])
@@ -225,6 +165,10 @@ def popup_window(file):
             # Play the next song in the playlist
             play_next_track(track_list, playlist)
         # Update the current song label
-        current_track_label.config(text="Currently Playing: " + playlist[current_track])
+        if file:
+            current_track_label.config(text="Currently Playing: " + file + " - " + playlist[current_track])
+        else:
+            current_track_label.config(text="Currently Playing: " + playlist[current_track])
+
         # Update the GUI
         window.update()
