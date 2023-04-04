@@ -66,6 +66,11 @@ class EditPage(Frame):
             "fr": "French",
             "de": "German"
         }
+        lang_codes2 = {
+            "English": "en",
+            "French": "fr",
+            "German": "de"
+        }
         select_message = Label(top_frame, text="Please Select:   ")
         detected = detection_text(text_model.get_text())
         
@@ -75,14 +80,14 @@ class EditPage(Frame):
             select_message.pack(side='left', padx=5)
             dropdown.pack(side='left', padx=5)
 
-            Button(top_frame, text="Confirm", command=lambda: text_model.set_src_language(clicked)).pack(side='right', padx=5)
+            Button(top_frame, text="Confirm", command=lambda: text_model.set_src_language(lang_codes2[clicked])).pack(side='right', padx=5)
         else:
             detected_label = Label(top_frame, text="Language Detected: {}".format(lang_codes[detected]))
             detected_label.pack(side='left', padx=5)
 
-            confirm_update = Button(top_frame, text="Confirm", command=lambda: text_model.set_src_language(clicked))
+            confirm_update = Button(top_frame, text="Confirm", command=lambda: text_model.set_src_language(lang_codes2[clicked]))
 
-            confirm = Button(top_frame, text="Confirm", command=lambda: text_model.set_src_language(lang_codes[detected]))
+            confirm = Button(top_frame, text="Confirm", command=lambda: text_model.set_src_language(detected))
 
             change = Button(top_frame, text="Change", command=lambda: 
                      {detected_label.pack_forget(), change.pack_forget(), confirm.pack_forget(), select_message.pack(side='left', padx=5), dropdown.pack(side='left', padx=5), confirm_update.pack(side='right', padx=5)})
