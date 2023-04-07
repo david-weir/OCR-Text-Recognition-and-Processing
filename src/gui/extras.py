@@ -9,6 +9,10 @@ from io import StringIO
 import fitz
 from textModel import *
 
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from detection import *
+
 def open_pdf():
     file_path = askopenfile(mode='rb', filetypes=[('PDFs', '*pdf')])
     if file_path is not None:
@@ -32,6 +36,7 @@ def open_pdf():
         
         text_model.set_textfile('output.txt')
         text_model.set_text()
+        text_model.set_src_language()
 
         file_path.close()
         device.close()
