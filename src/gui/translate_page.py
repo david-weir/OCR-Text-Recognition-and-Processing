@@ -28,6 +28,54 @@ class TranslatePage(Frame):
         center.grid(row=1, sticky="nsew")
         btm_frame.grid(row=3, sticky="ew")
 
+        """options = [
+            "Language",
+            "English",
+            "French",
+            "German"
+        ]
+
+        lang_codes = {
+            "English": "en",
+            "French": "fr",
+            "German": "de"
+        }
+
+        detected = text_model.get_src_language()
+        options.remove(detected)
+        
+        # datatype of menu text
+        clicked = StringVar()
+        
+        # initial menu text
+        clicked.set("Language")
+        
+        # Create Dropdown menu
+        dropdown = OptionMenu(center, clicked, *options)
+        dropdown.config(width=7)
+
+        message = Label(center, text=detected).place(relx=0.3, rely=0.5, anchor=CENTER)
+        select_message = Label(center, text="To").place(relx=0.5, rely=0.5, anchor=CENTER)
+        dropdown.place(relx=0.7, rely=0.5, anchor=CENTER)
+
+        confirm = Button(center, text="Confirm", command=lambda: self.confirm(clicked.get())).place(relx=0.5, rely=0.6, anchor=CENTER)"""
+        b = Button(center, text="click to translate", command=lambda: {self.show_page(center), b.destroy()})
+        b.pack()
+
+        previous = Button(btm_frame, text ="Back",
+                   command = lambda : controller.show_frame(edit_page.EditPage))
+        previous.pack(side='left', padx=8, pady=5)
+
+        next = Button(btm_frame, text ="Next",
+               command = lambda : controller.show_frame(options_page.OptionsPage))
+        next.pack(side='right', padx=8, pady=5)
+
+    def update_lang(self, center, options, message):
+        detected = text_model.get_src_language()
+        options.remove(detected)
+        message.config(text=detected)
+
+    def show_page(self, center):
         options = [
             "Language",
             "English",
@@ -41,7 +89,13 @@ class TranslatePage(Frame):
             "German": "de"
         }
 
-        detected = "English"
+        lang_codes2 = { # include in text model
+            "en": "English",
+            "fr": "French",
+            "de": "German"
+        }
+
+        detected = lang_codes2[text_model.get_src_language()]
         options.remove(detected)
         
         # datatype of menu text
@@ -59,14 +113,6 @@ class TranslatePage(Frame):
         dropdown.place(relx=0.7, rely=0.5, anchor=CENTER)
 
         confirm = Button(center, text="Confirm", command=lambda: self.confirm(clicked.get())).place(relx=0.5, rely=0.6, anchor=CENTER)
-
-        previous = Button(btm_frame, text ="Back",
-                   command = lambda : controller.show_frame(edit_page.EditPage))
-        previous.pack(side='left', padx=8, pady=5)
-
-        next = Button(btm_frame, text ="Next",
-               command = lambda : controller.show_frame(options_page.OptionsPage))
-        next.pack(side='right', padx=8, pady=5)
 
     def confirm(self, clicked):
         lang_codes = {
