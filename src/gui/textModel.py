@@ -1,6 +1,7 @@
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from detection import *
+import re
 
 class textModel:
     def __init__(self, src_lang="", dst_lang="", format=""):
@@ -9,6 +10,7 @@ class textModel:
         self.format = format
         self.text = "this is the sample piece of text to show that it is working."
         self.textfile = ""
+        self.filename = ""
 
     def set_src_language(self):
         self.src_lang = detection_text(self.text)
@@ -44,5 +46,14 @@ class textModel:
 
     def set_textfile(self, textfile):
         self.textfile = textfile
+
+    def set_filename(self, filename):
+        fname = str(filename)
+        file = re.findall(r"'([^']*)'", fname)
+        f = file[0].split('/')[-1]
+        self.filename = f
+
+    def get_filename(self):
+        return self.filename
 
 text_model = textModel()

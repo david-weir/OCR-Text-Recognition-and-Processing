@@ -29,16 +29,17 @@ class UploadPage(Frame):
 
         ctr_left = tk.Frame(center)
         ctr_right = tk.Frame(center)
-        ctr_bottom = tk.Frame(center)
+        ctr_bottom = tk.Frame(center, height=100)
 
         ctr_left.grid(row=0, column=0, sticky="nsew")
         ctr_right.grid(row=0, column=1, sticky="nsew")
-        ctr_bottom.grid(row=1, columnspan=2)
+        ctr_bottom.grid(row=1, columnspan=2, sticky='nsew')
+        ctr_bottom.pack_propagate(False)
         
         label = Label(top_frame, text="Upload Documents", font=("Verdana", 20))
         label.place(relx=.5, rely=.5,anchor= CENTER)
-
-        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf")])
+        files = Listbox(ctr_bottom, width=100, height=40)
+        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files)])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -67,10 +68,14 @@ class UploadPage(Frame):
                 text_model.set_format("handwritten image")
 
         caller_button = Button(ctr_right, text="Select", command=lambda:upload_type())
-        caller_button.place(relx=.5, rely=.6, anchor=CENTER)
+        caller_button.place(relx=.5, rely=.7, anchor=CENTER)
 
-        Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller)).pack()
+        Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller)).pack(side='bottom')
 
+    def show_files(self, files):
+        files.insert(END, text_model.get_filename())
+        files.pack(padx=10)
+    
     def show_next_btn(self, btm_frame, controller):
         next = Button(btm_frame, text ="Next",
                command = lambda : controller.show_frame(edit_page.EditPage))
