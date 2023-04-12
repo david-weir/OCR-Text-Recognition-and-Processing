@@ -3,7 +3,6 @@ from tkinter.ttk import *
 import tkinter as tk
 from extras import *
 import edit_page
-import config
 from textModel import *
 
 class UploadPage(Frame):
@@ -27,13 +26,14 @@ class UploadPage(Frame):
         center.grid_rowconfigure(0, weight=1)
         center.grid_columnconfigure(0, weight=1)
         center.grid_columnconfigure(1, weight=1)
-        
+
         ctr_left = tk.Frame(center)
         ctr_right = tk.Frame(center)
+        ctr_bottom = tk.Frame(center)
 
         ctr_left.grid(row=0, column=0, sticky="nsew")
         ctr_right.grid(row=0, column=1, sticky="nsew")
-        
+        ctr_bottom.grid(row=1, columnspan=2)
         
         label = Label(top_frame, text="Upload Documents", font=("Verdana", 20))
         label.place(relx=.5, rely=.5,anchor= CENTER)
@@ -69,10 +69,9 @@ class UploadPage(Frame):
         caller_button = Button(ctr_right, text="Select", command=lambda:upload_type())
         caller_button.place(relx=.5, rely=.6, anchor=CENTER)
 
-        previous = Button(btm_frame, text ="Back",
-                   command = lambda : controller.show_frame(edit_page.EditPage))
-        previous.pack(side='left', padx=8, pady=5)
+        Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller)).pack()
 
+    def show_next_btn(self, btm_frame, controller):
         next = Button(btm_frame, text ="Next",
                command = lambda : controller.show_frame(edit_page.EditPage))
         next.pack(side='right', padx=8, pady=5)
