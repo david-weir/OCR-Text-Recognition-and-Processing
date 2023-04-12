@@ -1,3 +1,7 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from detection import *
+
 class textModel:
     def __init__(self, src_lang="", dst_lang="", format=""):
         self.src_lang = src_lang
@@ -6,7 +10,10 @@ class textModel:
         self.text = "this is the sample piece of text to show that it is working."
         self.textfile = ""
 
-    def set_src_language(self, language):
+    def set_src_language(self):
+        self.src_lang = detection_text(self.text)
+    
+    def update_src_language(self, language):
         self.src_lang = language
 
     def get_src_language(self):
