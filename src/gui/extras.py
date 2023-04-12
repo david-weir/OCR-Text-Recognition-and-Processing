@@ -37,6 +37,7 @@ def open_pdf():
         text_model.set_textfile('output.txt')
         text_model.set_text()
         text_model.set_src_language()
+        text_model.set_filename(file_path)
 
         file_path.close()
         device.close()
