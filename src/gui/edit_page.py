@@ -5,6 +5,7 @@ import tkinter as tk
 import translate_page
 import upload_page
 from textModel import *
+import ui_messages
 
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -28,12 +29,13 @@ class EditPage(Frame):
         center.grid(row=1, sticky="nsew")
         btm_frame.grid(row=3, sticky="ew")
 
-        center.rowconfigure(0, minsize=450, weight=1)
-        center.columnconfigure(1, weight=1) #, minsize=400,
-        # txt_edit = tk.Text(center)
+        center.rowconfigure(0, minsize=250, weight=1)
+        center.columnconfigure(1, weight=1)
 
-        b = Button(center, text="chance to edit text", command=lambda: {self.showpage(center, top_frame), b.destroy()})
-        b.grid(row=0, column=0)
+        message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
+        b = Button(center, text="Edit", command=lambda: {b.destroy(), message.destroy(), self.showpage(center, top_frame)})
+        message.pack(expand=True)
+        b.pack(expand=True)
 
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(upload_page.UploadPage))
@@ -97,13 +99,14 @@ class EditPage(Frame):
         txt_edit = tk.Text(center)
         fr_buttons = tk.Frame(center, relief=tk.RAISED, bd=2)
         btn_open = tk.Button(fr_buttons, text="Save", command=lambda:text_model.set_text(txt_edit.get(1.0, tk.END)))
-        btn_save = tk.Button(fr_buttons, text="Save As...", command=lambda:{self.showpreview(txt_edit), self.showlanguage(top_frame)})
+        scroll = Scrollbar(center, command=txt_edit.yview)
+        txt_edit.configure(yscrollcommand=scroll.set)
 
         btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-        btn_save.grid(row=1, column=0, sticky="ew", padx=5)
 
         fr_buttons.grid(row=0, column=0, sticky="ns")
         txt_edit.grid(row=0, column=1, sticky="nsew")
+        scroll.grid(row=0, column=2, sticky='ns')
 
         textfile = text_model.get_textfile()
         with open(textfile, 'r') as text:
