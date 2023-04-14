@@ -64,61 +64,10 @@ class TranslatePage(Frame):
             with open(file, 'r') as f:
                 with open("translated.txt", 'w') as ft:
                     ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), f.read()))
-
+            text_preview.view_new_version()
+            
         elif summarise_opt.get() == 1:
             file = text_model.get_textfile()
             with open("translated.txt", 'w') as ft:
                 ft.write(summarise.summarisation(file))
             text_preview.view_new_version()
-
-    def show_page(self, center):
-        options = [
-            "Language",
-            "English",
-            "French",
-            "German"
-        ]
-
-        lang_codes = {
-            "English": "en",
-            "French": "fr",
-            "German": "de"
-        }
-
-        lang_codes2 = { # include in text model
-            "en": "English",
-            "fr": "French",
-            "de": "German"
-        }
-
-        detected = lang_codes2[text_model.get_src_language()]
-        options.remove(detected)
-        
-        # datatype of menu text
-        clicked = StringVar()
-        
-        # initial menu text
-        clicked.set("Language")
-        
-        # Create Dropdown menu
-        dropdown = OptionMenu(center, clicked, *options)
-        dropdown.config(width=7)
-
-        message = Label(center, text=detected).place(relx=0.3, rely=0.7, anchor=CENTER)
-        select_message = Label(center, text="To").place(relx=0.5, rely=0.7, anchor=CENTER)
-        dropdown.place(relx=0.7, rely=0.7, anchor=CENTER)
-
-        confirm = Button(center, text="Confirm", command=lambda: self.confirm(clicked.get())).place(relx=0.5, rely=0.8, anchor=CENTER)
-
-    def confirm(self, clicked):
-        lang_codes = {
-            "English": "en",
-            "French": "fr",
-            "German": "de"
-        }
-
-        text_model.set_dst_language(lang_codes[clicked])
-        file = text_model.get_textfile()
-        with open(file, 'r') as f:
-            with open("translated.txt", 'w') as ft:
-                ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), f.read()))

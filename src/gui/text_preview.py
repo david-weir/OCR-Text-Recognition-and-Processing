@@ -4,18 +4,16 @@ from textModel import *
 
 def view_new_version():
     window = tk.Toplevel() 
-    window.geometry('400x300')
+    window.geometry('500x330')
     window.grid_rowconfigure(1, weight=1)
     window.grid_columnconfigure(0, weight=1)
 
     # create all of the main containers
-    top_frame = tk.Frame(window, width=450, height=50, pady=3)
     center = tk.Frame(window, width=450, height=40, padx=3, pady=3)
     btm_frame = tk.Frame(window, width=450, height=45, pady=3)
 
     # layout all of the main containers
 
-    top_frame.grid(row=0, sticky="ew")
     center.grid(row=1, sticky="nsew")
     btm_frame.grid(row=3, sticky="ew")
 
