@@ -42,7 +42,38 @@ class Model:
         self.session, self.saver = self.setup_tf  # initialize tf
 
     def setup_cnn(self) -> None:
-        pass
+        """ Creates Convolution Neural Network (CNN) Layers (currently NN consists of 5 CNN layers) """
+
+        # convert input img to 4D by adding a dimension (tensor) at axis 3
+        cnn_4d = tf.expand_dims(input=self.input_imgs, axis=3)
+
+        # list of parameters for the layers
+        kernel_vals = [5, 5, 3, 3, 3]  # 5x5 kernel for first 2 layers, 3x3 for final 3 layers
+        feature_vals = [1, 32, 64, 128, 128, 256]
+        stride_vals = pool_vals = [(2, 2), (2, 2), (1, 2), (1, 2), (1, 2)]
+        num_layers = len(stride_vals)  # currently 5 CNN layers
+
+        # create layers
+        pool = cnn_4d  # input into first CNN layer
+        for i in range(num_layers):  # loop over all CNN layers - extract relevant features
+
+            # variable Tensor - 4D for 2D convolution operation
+            kernel = tf.Variable(
+                tf.random.truncated_normal([kernel_vals[i], kernel_vals[i], feature_vals[i],
+                                            feature_vals[i + 1]], stddev=0.1))
+
+            # 2D convolution using same padding -> set stride of sliding window to 1
+            convolution = tf.nn.conv2d(input=pool, filters=kernel, padding='SAME', strides=(1, 1, 1, 1))
+            norm_conv = tf.compat.v1.layers.batch_normalization(convolution, training=self.is_train)  # normalised conv
+
+            # RELU activation function
+            relu = tf.nn.relu(norm_conv)  # non-linear RELU - returns 0 for negative vals, returns val if positive
+
+            # summarises image regions outputting downsized (pooled) versions of the input
+            pool = tf.nn.max_pool2d(input=relu, ksize=(1, pool_vals[i][0], pool_vals[i][1], 1),
+                                    strides=(1, stride_vals[i][0], stride_vals[i][1], 1), padding='VALID')
+
+        self.cnn_4d_out = pool
 
     def setup_rnn(self) -> None:
         pass
