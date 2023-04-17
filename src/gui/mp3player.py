@@ -7,6 +7,7 @@ from textModel import *
 from pathlib import Path
 from mutagen.mp3 import MP3
 # from pydub import AudioSegment
+import shutil
 
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -91,6 +92,13 @@ def quit_mp3player():
     playing = False
     mixer.music.stop()
 
+def delete_folder():
+    directory = 'mp3_segments'
+    current_dir = os.getcwd()
+
+    path = os.path.join(current_dir, directory)
+    shutil.rmtree(path)
+
 def popup_window(file):
     window = Toplevel()
     window.title("MP3 player")
@@ -101,8 +109,9 @@ def popup_window(file):
     playlist = []
     mp3 = text_model.get_textfile()
     tracks = convert.split_txtfile(mp3)
+    os.mkdir('mp3_segments')
     for track in tracks:
-        rec = convert.download_mp3("en", track) #language
+        rec = convert.download_split_mp3("en", track, "mp3_segments") #language
         if file:
             name = "{} - {}".format(file, rec)
             track_list.insert(END, name)
@@ -149,7 +158,7 @@ def popup_window(file):
     current_track_label = tk.Label(window, text="Currently Playing: " + file + " - " + playlist[current_track])
     current_track_label.pack()
 
-    button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), window.destroy()})
+    button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), delete_folder(), window.destroy()})
     button_close.pack(pady=10)
 
     """move into start playing function?"""
