@@ -15,6 +15,17 @@ def download_mp3(lang, file):
 
     return "{}.mp3".format(file_name)
 
+def download_split_mp3(lang, file, directory):
+    path = directory + '/' + file
+    with open(path) as f:
+        text = f.read()
+
+    recording = gTTS(text=text, lang=lang, slow=False)
+    file_name = file.replace(".txt", "")
+    recording.save("{}/{}.mp3".format(directory, file_name))
+
+    return "{}/{}.mp3".format(directory, file_name)
+
     # os.system("mpg321 speech.mp3")
 def play_mp3(lang, file):
     with open(file) as f:
@@ -75,7 +86,7 @@ def split_txtfile(txtfile):
         files = []
         chunk = 100
         for c, i in enumerate(range(0, len(words_lst), chunk)):
-                with open("part_{}.txt".format(c+1), "w") as out:
+                with open("mp3_segments/part_{}.txt".format(c+1), "w") as out:
                     out.write(" ".join(words_lst[i:i+chunk]))
                     files.append("part_{}.txt".format(c+1))
 
