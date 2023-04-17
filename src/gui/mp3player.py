@@ -6,7 +6,6 @@ from tkinter import filedialog
 from textModel import *
 from pathlib import Path
 from mutagen.mp3 import MP3
-# from pydub import AudioSegment
 import shutil
 
 import os, sys
@@ -20,52 +19,42 @@ playing = True
 def play(index, playlist):
     global current_track
     current_track = index
-    # Load and play the selected song
     mixer.music.load(playlist[current_track])
     mixer.music.play()
 
-# Define a function to play the next song in the playlist
 def play_next_track(track_list, playlist):
     global current_track
     current_track += 1
-    if current_track >= len(playlist):
-        # Restart the playlist if we've reached the end
-        current_track = 0
-    # Load and play the next song
-    mixer.music.load(playlist[current_track])
-    mixer.music.play()
+
+    if current_track < len(playlist):
+        mixer.music.load(playlist[current_track])
+        mixer.music.play()
 
     track_list.selection_clear(0, tk.END)
     track_list.activate(current_track)
     track_list.selection_set(current_track, last=None)
 
-# Define a function to skip to the next song in the playlist
 def skip(track_list, playlist):
     # Stop the current song
+    global current_track
     mixer.music.stop()
     # Play the next song in the playlist
+    # if (current_track + 1) < len(playlist):
     play_next_track(track_list, playlist)
 
-# Define a function to go back to the previous song in the playlist
 def previous(track_list, playlist):
-    # Stop the current song
     mixer.music.stop()
-    # Go back to the previous song in the playlist
     global current_track
     current_track -= 1
-    """change this"""
-    if current_track < 0:
-        # Go to the last song in the playlist if we're at the beginning
-        current_track = len(playlist) - 1
-    # Load and play the previous song
-    mixer.music.load(playlist[current_track])
-    mixer.music.play()
+
+    if current_track >= 0 and current_track < len(playlist):
+        mixer.music.load(playlist[current_track])
+        mixer.music.play()
 
     track_list.selection_clear(0, tk.END)
     track_list.activate(current_track)
     track_list.selection_set(current_track, last=None)
 
-# Define a function to pause the current song
 def pause():
     global paused
     if not paused:
@@ -75,12 +64,10 @@ def pause():
         mixer.music.unpause()
         paused = False
 
-def select_track(track_list, playlist): # event, 
+def select_track(track_list, playlist):  
     track = track_list.curselection()[0]
     if track:
-        # Stop the current song
         mixer.music.stop()
-        # Play the selected song
         play(track, playlist)
 
 def stop(track_list):
@@ -103,20 +90,23 @@ def popup_window(file):
     window = Toplevel()
     window.title("MP3 player")
     mixer.init()
-    # global playing
     track_list = Listbox(window, bg='black', fg='white', width=50, selectbackground='green', selectforeground='black')
 
     playlist = []
+
+    os.mkdir('mp3_segments')
+
     mp3 = text_model.get_textfile()
     tracks = convert.split_txtfile(mp3)
-    os.mkdir('mp3_segments')
     for track in tracks:
         rec = convert.download_split_mp3("en", track, "mp3_segments") #language
         if file:
-            name = "{} - {}".format(file, rec)
+            stripped_name = rec.replace("mp3_segments/", "").replace(".mp3", "")
+            name = "{} - {}".format(file, stripped_name)
             track_list.insert(END, name)
         else:
-            track_list.insert(END, rec)
+            stripped_name = rec.replace("mp3_segments/", "").replace(".mp3", "")
+            track_list.insert(END, stripped_name)
         playlist.append(rec)
 
     track_list.pack(pady=20, padx=20)
@@ -155,9 +145,6 @@ def popup_window(file):
     pause_button.grid(row=0, column=1, padx=10)
     # stop_button.grid(row=0, column=4, padx=10)
 
-    current_track_label = tk.Label(window, text="Currently Playing: " + file + " - " + playlist[current_track])
-    current_track_label.pack()
-
     button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), delete_folder(), window.destroy()})
     button_close.pack(pady=10)
 
@@ -171,13 +158,7 @@ def popup_window(file):
     while playing == True:
         # Check if the current song has finished playing
         if not mixer.music.get_busy() and not paused:
-            # Play the next song in the playlist
             play_next_track(track_list, playlist)
-        # Update the current song label
-        if file:
-            current_track_label.config(text="Currently Playing: " + file + " - " + playlist[current_track])
-        else:
-            current_track_label.config(text="Currently Playing: " + playlist[current_track])
 
         # Update the GUI
         window.update()
