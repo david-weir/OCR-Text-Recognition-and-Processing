@@ -1,11 +1,7 @@
 import tkinter as tk
 from tkinter import *
-from pygame import mixer, event, time
-import tkinter.font as font
-from tkinter import filedialog
+from pygame import mixer
 from textModel import *
-from pathlib import Path
-from mutagen.mp3 import MP3
 import shutil
 
 import os, sys
@@ -35,11 +31,9 @@ def play_next_track(track_list, playlist):
     track_list.selection_set(current_track, last=None)
 
 def skip(track_list, playlist):
-    # Stop the current song
     global current_track
     mixer.music.stop()
-    # Play the next song in the playlist
-    # if (current_track + 1) < len(playlist):
+
     play_next_track(track_list, playlist)
 
 def previous(track_list, playlist):
@@ -79,19 +73,7 @@ def quit_mp3player():
     playing = False
     mixer.music.stop()
 
-def delete_folder():
-    directory = 'mp3_segments'
-    current_dir = os.getcwd()
-
-    path = os.path.join(current_dir, directory)
-    shutil.rmtree(path)
-
-def popup_window(file):
-    window = Toplevel()
-    window.title("MP3 player")
-    mixer.init()
-    track_list = Listbox(window, bg='black', fg='white', width=50, selectbackground='green', selectforeground='black')
-
+def create_mp3s(file, track_list):
     playlist = []
 
     os.mkdir('mp3_segments')
@@ -109,13 +91,28 @@ def popup_window(file):
             track_list.insert(END, stripped_name)
         playlist.append(rec)
 
+    return playlist
+
+def delete_folder():
+    directory = 'mp3_segments'
+    current_dir = os.getcwd()
+
+    path = os.path.join(current_dir, directory)
+    shutil.rmtree(path)
+
+def popup_window(file):
+    window = Toplevel()
+    window.title("MP3 player")
+    mixer.init()
+    track_list = Listbox(window, bg='black', fg='white', width=50, selectbackground='green', selectforeground='black')
+
+    playlist = create_mp3s(file, track_list)
+
     track_list.pack(pady=20, padx=20)
     track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list=track_list, playlist=playlist))
 
-    rewind_btn = PhotoImage(file='images/rewind.png') #, height=30, width=30
-    play_btn = PhotoImage(file='images/play.png')
+    rewind_btn = PhotoImage(file='images/rewind.png') 
     pause_btn = PhotoImage(file='images/pause.png')
-    stop_btn = PhotoImage(file='images/stop.png')
     skip_btn = PhotoImage(file='images/skip.png')
 
     controls = Frame(window)
@@ -123,32 +120,23 @@ def popup_window(file):
 
     rewind_button = Label(controls, image=rewind_btn, borderwidth=0, highlightthickness=0)
     skip_button = Label(controls, image=skip_btn, borderwidth=0, highlightthickness=0)
-    play_button = Label(controls, image=play_btn, borderwidth=0, highlightthickness=0)
     pause_button = Label(controls, image=pause_btn, borderwidth=0, highlightthickness=0)
-    stop_button =  Label(controls, image=stop_btn, borderwidth=0, highlightthickness=0)
 
     rewind_button.image = rewind_btn
     skip_button.image = skip_btn
-    play_button.image = play_btn
     pause_button.image = pause_btn
-    stop_button.image = stop_btn
 
     rewind_button.bind('<Button>', lambda x: previous(track_list, playlist))
     skip_button.bind('<Button>', lambda x: skip(track_list, playlist))
-    # play_button.bind('<Button>', lambda x: play(track_list))
     pause_button.bind('<Button>', lambda x: pause())
-    # stop_button.bind('<Button>', lambda x: stop(track_list)) # doesnt do anything
 
     rewind_button.grid(row=0, column=0, padx=10)
     skip_button.grid(row=0, column=2, padx=10)
-    # play_button.grid(row=0, column=2, padx=10)
     pause_button.grid(row=0, column=1, padx=10)
-    # stop_button.grid(row=0, column=4, padx=10)
 
     button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), delete_folder(), window.destroy()})
     button_close.pack(pady=10)
 
-    """move into start playing function?"""
     mixer.music.load(playlist[current_track])
     mixer.music.play()
 
@@ -156,9 +144,5 @@ def popup_window(file):
     track_list.selection_set(current_track, last=None)
 
     while playing == True:
-        # Check if the current song has finished playing
         if not mixer.music.get_busy() and not paused:
             play_next_track(track_list, playlist)
-
-        # Update the GUI
-        window.update()
