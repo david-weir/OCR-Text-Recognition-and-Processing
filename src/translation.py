@@ -17,6 +17,10 @@ def get_translation_model_and_tokenizer(src_lang, dst_lang):
     return model, tokenizer
 
 def translate(src, dst, text):
+    supported_langs = ['en', 'fr', 'de']
+    if src not in supported_langs:
+        raise ValueError('Language is not supported.')
+    
     model, tokenizer = get_translation_model_and_tokenizer(src, dst)
     inputs = tokenizer.encode(text, return_tensors="pt", max_length=512, truncation=True)
 
@@ -29,7 +33,6 @@ def translate(src, dst, text):
     # generate the translation output using beam search
     beam_outputs = model.generate(inputs, num_beams=2)
     # decode the output and ignore special tokens
-    print(tokenizer.decode(beam_outputs[0], skip_special_tokens=True))
     return tokenizer.decode(beam_outputs[0], skip_special_tokens=True)
 
 def split_text(text):
