@@ -146,3 +146,4 @@ def popup_window(file):
     while playing == True:
         if not mixer.music.get_busy() and not paused:
             play_next_track(track_list, playlist)
+        window.update()

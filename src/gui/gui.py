@@ -14,7 +14,7 @@ class OCRApp(Tk):
         # __init__ function for class Tk
         Tk.__init__(self, *args, **kwargs)
         
-        self.geometry('500x400')
+        self.geometry('650x400')
         self.title("OCR Text to Speech Reading Aid")
         
         # creating a container
