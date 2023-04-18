@@ -12,6 +12,7 @@ class DecoderType:
 
 class Model:
     """ Tensorflow model for HTR """
+
     def __init__(self, chars: List[str], decoder: str = DecoderType.BestPath,
                  restore: bool = False, dump: bool = False) -> None:
         self.dump = dump
@@ -76,7 +77,30 @@ class Model:
         self.cnn_4d_out = pool
 
     def setup_rnn(self) -> None:
-        pass
+        """ Create LSTM Recurrent Neural Network (RNN) Layers (2 RNN layers) """
+
+        #  feed output of CNN into RNN layers
+        rnn_3d = tf.squeeze(self.cnn_4d_out, axis=[2])  # remove dimensions of size 2 from tensor
+
+        features = 256  # 256 features fed into each timestep
+
+        # basic LSTM cells use in building RNN -> 2 RNN layers
+        # state_is_tuple returns 2-tuples of c_state (cell) and m_state (hidden/memory)
+        cells = [tf.compat.v1.nn.rnn_cell.LSTMCell(num_units=features, state_is_tuple=True) for layer in range(2)]
+        stacked = tf.compat.v1.nn.rnn_cell.MultiRNNCell(cells, state_is_tuple=True)  # stack multiple LSTM basic cells
+
+        # Bidirectional RNN - forward + backwards
+        (fw, bw), _ = tf.compat.v1.nn.bidirectional_dynamic_rnn(cell_fw=stacked, cell_bw=stacked,
+                                                                input=rnn_3d, dtype=rnn_3d.dtype)
+
+        # concatenate forward + backwards cells along the 2nd dimension -> expand dimension @ axis 2
+        concat = tf.expand_dims(tf.concat([fw, bw], 2), 2)
+
+        # project output yo chars (including blank)
+        kernel = tf.Variable(tf.random.truncated_normal([1, 1, features * 2, len(self.chars) + 1], stddev=0.1))
+        self.rnn_out_3d = tf.squeeze(tf.nn.atrous_conv2d(value=concat, filters=kernel, rate=1, padding='SAME'),
+                                     axis=[2])  # computes 2D atrous convolution (dilated conv) on 4D concat
+        # dilation rate = 1 => no gaps (tale every 1st element)
 
     def setup_ctc(self) -> None:
         pass
