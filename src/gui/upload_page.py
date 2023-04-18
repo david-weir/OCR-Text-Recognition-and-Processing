@@ -38,8 +38,11 @@ class UploadPage(Frame):
         
         label = Label(top_frame, text="Upload Documents", font=("Verdana", 20))
         label.place(relx=.5, rely=.5,anchor= CENTER)
-        files = Listbox(ctr_bottom, width=100, height=40)
-        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files)])
+        # files = Listbox(ctr_bottom, width=100, height=40)
+        files = Label(ctr_bottom, text="Uploaded PDF: ")
+        confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller))
+
+        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files, confirm_btn, ctr_bottom)])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -67,14 +70,17 @@ class UploadPage(Frame):
                 open_images()
                 text_model.set_format("handwritten image")
 
-        caller_button = Button(ctr_right, text="Select", command=lambda:upload_type())
+        
+        caller_button = Button(ctr_right, text="Select", command=lambda:{upload_type()})
         caller_button.place(relx=.5, rely=.7, anchor=CENTER)
 
-        Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller)).pack(side='bottom')
 
-    def show_files(self, files):
-        files.insert(END, text_model.get_filename())
-        files.pack(padx=10)
+    def show_files(self, files, confirm_btn, ctr_bottom):
+        # files.insert(END, text_model.get_filename())
+        files.place(relx=0.3, rely=0.3)
+        file_name = Label(ctr_bottom, text=text_model.get_filename())
+        file_name.place(relx=0.5, rely=0.3)
+        confirm_btn.place(relx=0.5, rely=0.6)
     
     def show_next_btn(self, btm_frame, controller):
         next = Button(btm_frame, text ="Next",
