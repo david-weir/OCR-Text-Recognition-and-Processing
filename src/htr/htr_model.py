@@ -3,6 +3,7 @@ from typing import List, Tuple
 import tensorflow as tf
 import sys
 from htr_loaddata import Batch
+import numpy as np
 
 
 class DecoderType:
@@ -223,3 +224,47 @@ class Model:
 
         # map labels to chars for all batch elements
         return [''.join([self.chars[c] for c in labelStr]) for labelStr in labels_str]
+
+    def inference_batch(self, batch: Batch, calc_prob: bool = False, gt_prob: bool = False):
+        """ Recognise texts in a batch using the NN """
+
+        num_batches = len(batch.imgs)
+        eval = []  # tensors to be evaluated
+
+        if calc_prob:
+            eval.append(self.ctc_3d)
+
+        # seq length depends on size of input image
+        max_len = batch.imgs[0].shape[0] // 4
+
+        # feed tensors into model
+        feed_dict = {
+            self.input_imgs: batch.imgs,
+            self.seq_len: [max_len] * num_batches,
+            self.is_train: True
+        }
+
+        eval_result = self.session.run(eval, feed_dict)  # evaluation
+
+        decoded = eval_result[0]  # tf decoders perform decoding in TF graph
+
+        # map labels to char string
+        texts = self.to_text(decoded, num_batches)
+
+        # feed RNN and recognised text into CTC loss to calc labeling prob
+        prob = None
+        if calc_prob:
+            sparse = self.to_sparse(batch.gt_texts) if gt_prob else self.to_sparse(texts)
+            ctc_input = eval_result[1]  # feed into ctc
+            eval_lst = self.loss_per_element
+            feed_dict = {
+                self.saved_ctc_input: ctc_input,
+                self.gt: sparse,
+                self.seq_len: [max_len] * num_batches,
+                self.is_train: False
+            }
+
+            loss = self.session.run(eval_lst, feed_dict)
+            prob = np.exp(-loss)
+
+        return texts, prob
