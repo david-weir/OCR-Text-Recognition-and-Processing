@@ -55,6 +55,8 @@ class TranslatePage(Frame):
             with open("translated.txt", 'w') as ft:
                 summarised = summarise.summarisation(file)
                 ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), summarised))
+            text_model.set_curr_language(text_model.get_dst_language())
+            text_model.set_output_file("translated.txt")
             text_preview.view_new_version()
 
         elif translate_opt.get() == 1:
@@ -64,10 +66,13 @@ class TranslatePage(Frame):
             with open(file, 'r') as f:
                 with open("translated.txt", 'w') as ft:
                     ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), f.read()))
+                text_model.set_curr_language(text_model.get_dst_language())
+                text_model.set_output_file("translated.txt")
             text_preview.view_new_version()
             
         elif summarise_opt.get() == 1:
             file = text_model.get_textfile()
             with open("translated.txt", 'w') as ft:
                 ft.write(summarise.summarisation(file))
+            text_model.set_output_file("translated.txt")
             text_preview.view_new_version()

@@ -78,10 +78,10 @@ def create_mp3s(file, track_list):
 
     os.mkdir('mp3_segments')
 
-    mp3 = text_model.get_textfile()
+    mp3 = text_model.get_output_file()
     tracks = convert.split_txtfile(mp3)
     for track in tracks:
-        rec = convert.download_split_mp3("en", track, "mp3_segments") #language
+        rec = convert.download_split_mp3(text_model.get_curr_language(), track, "mp3_segments") #language
         if file:
             stripped_name = rec.replace("mp3_segments/", "").replace(".mp3", "")
             name = "{} - {}".format(file, stripped_name)

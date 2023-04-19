@@ -7,6 +7,7 @@ class textModel:
     def __init__(self, src_lang="", dst_lang="", format=""):
         self.src_lang = src_lang
         self.dst_lang = dst_lang
+        self.curr_lang = ''
         self.format = format
         self.text = "this is the sample piece of text to show that it is working."
         self.textfile = ""
@@ -27,6 +28,12 @@ class textModel:
     def get_dst_language(self):
         return self.dst_lang
 
+    def set_curr_language(self, language):
+        self.curr_lang = language
+
+    def get_curr_language(self):
+        return self.curr_lang
+
     def set_format(self, format):
         self.format = format
 
@@ -46,6 +53,12 @@ class textModel:
 
     def set_textfile(self, textfile):
         self.textfile = textfile
+
+    def get_output_file(self):
+        return self.output_file
+
+    def set_output_file(self, output_file):
+        self.output_file = output_file
 
     def set_filename(self, filename):
         fname = str(filename)
