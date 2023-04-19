@@ -80,7 +80,7 @@ class UploadPage(Frame):
         files.place(relx=0.3, rely=0.3)
         file_name = Label(ctr_bottom, text=text_model.get_filename())
         file_name.place(relx=0.5, rely=0.3)
-        confirm_btn.place(relx=0.5, rely=0.6)
+        confirm_btn.place(relx=0.4, rely=0.6)
     
     def show_next_btn(self, btm_frame, controller):
         next = Button(btm_frame, text ="Next",
