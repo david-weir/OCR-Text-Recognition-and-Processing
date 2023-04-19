@@ -13,11 +13,11 @@ class DecoderType:
 class Model:
     """ Tensorflow model for HTR """
 
-    def __init__(self, chars: List[str], decoder: str = DecoderType.BestPath,
+    def __init__(self, chars: List[str], decoder_type: str = DecoderType.BestPath,
                  restore: bool = False, dump: bool = False) -> None:
         self.dump = dump
         self.chars = chars
-        self.decoder = decoder
+        self.decoder_type = decoder_type
         self.restore = restore
         self.snap_ID = 0
 
@@ -59,18 +59,20 @@ class Model:
         for i in range(num_layers):  # loop over all CNN layers - extract relevant features
 
             # variable Tensor - 4D for 2D convolution operation
+            # create a kernel of kernal_vals[i] x kernal_vals[i]
             kernel = tf.Variable(
                 tf.random.truncated_normal([kernel_vals[i], kernel_vals[i], feature_vals[i],
                                             feature_vals[i + 1]], stddev=0.1))
 
-            # 2D convolution using same padding -> set stride of sliding window to 1
+            # 2D convolution using same padding + kernel -> set stride of sliding window to 1
             convolution = tf.nn.conv2d(input=pool, filters=kernel, padding='SAME', strides=(1, 1, 1, 1))
             norm_conv = tf.compat.v1.layers.batch_normalization(convolution, training=self.is_train)  # normalised conv
 
-            # RELU activation function
+            # RELU activation function -> takes normalised convolution as input
             relu = tf.nn.relu(norm_conv)  # non-linear RELU - returns 0 for negative vals, returns val if positive
 
             # summarises image regions outputting downsized (pooled) versions of the input
+            # size pool_val x pool_val | step-size stride_val x stride_val
             pool = tf.nn.max_pool2d(input=relu, ksize=(1, pool_vals[i][0], pool_vals[i][1], 1),
                                     strides=(1, stride_vals[i][0], stride_vals[i][1], 1), padding='VALID')
 
@@ -82,28 +84,57 @@ class Model:
         #  feed output of CNN into RNN layers
         rnn_3d = tf.squeeze(self.cnn_4d_out, axis=[2])  # remove dimensions of size 2 from tensor
 
-        features = 256  # 256 features fed into each timestep
+        features = 256  # 256 features fed into each timestep (taken from output of CNN)
 
         # basic LSTM cells use in building RNN -> 2 RNN layers
         # state_is_tuple returns 2-tuples of c_state (cell) and m_state (hidden/memory)
         cells = [tf.compat.v1.nn.rnn_cell.LSTMCell(num_units=features, state_is_tuple=True) for layer in range(2)]
         stacked = tf.compat.v1.nn.rnn_cell.MultiRNNCell(cells, state_is_tuple=True)  # stack multiple LSTM basic cells
 
-        # Bidirectional RNN - forward + backwards
+        # Bidirectional RNN - forward + backwards (2 output seqs 32x256)
         (fw, bw), _ = tf.compat.v1.nn.bidirectional_dynamic_rnn(cell_fw=stacked, cell_bw=stacked,
                                                                 input=rnn_3d, dtype=rnn_3d.dtype)
 
         # concatenate forward + backwards cells along the 2nd dimension -> expand dimension @ axis 2
-        concat = tf.expand_dims(tf.concat([fw, bw], 2), 2)
+        concat = tf.expand_dims(tf.concat([fw, bw], 2), 2)  # outputs seq of size 32x512
 
-        # project output yo chars (including blank)
+        # project output to chars (including blank for ctc) = 80 chars
         kernel = tf.Variable(tf.random.truncated_normal([1, 1, features * 2, len(self.chars) + 1], stddev=0.1))
         self.rnn_out_3d = tf.squeeze(tf.nn.atrous_conv2d(value=concat, filters=kernel, rate=1, padding='SAME'),
                                      axis=[2])  # computes 2D atrous convolution (dilated conv) on 4D concat
         # dilation rate = 1 => no gaps (tale every 1st element)
 
     def setup_ctc(self) -> None:
-        pass
+        """ Connectionist Temporal Classification (CTC) loss and decoder """
+        self.ctc_3d = tf.transpose(a=self.rnn_out_3d, perm=[1, 0, 2])  # tranposed matrix from RNN
+
+        # ground truth texts encoded as sparse tensor -> 3 separate dense tensors (indices, values, dense_shape)
+        self.gt = tf.SparseTensor(tf.compat.v1.placeholder(tf.int64, shape=[None, 2]),
+                                  tf.compat.v1.placeholder(tf.int32, [None]),
+                                  tf.compat.v1.placeholder(tf.int64, [2]))
+
+        self.seq_len = tf.compat.v1.placeholder(tf.int32, [None])  # input seq len (passed into CTC loss and decoding)
+
+        # calculate loss for batch -> find mean of elements across dimensions of ctc loss tensor
+        self.loss = tf.reduce_mean(
+            input_tensor=tf.compat.v1.nn.ctc_loss(labels=self.gt, inputs=self.ctc_3d,
+                                                  sequence_length=self.seq_len,
+                                                  ctc_merge_repeated=True))
+
+        # ctc loss for each element to compute label probability
+        self.saved_ctc_input = tf.compat.v1.placeholder(tf.float32, shape=[None, None, len(self.chars) + 1])
+        self.loss_per_element = tf.compat.v1.nn.ctc_loss(labels=self.gt, inputs=self.saved_ctc_input,
+                                                         sequence_length=self.seq_len, ctc_merge_repeated=True)
+
+        # CTC Decoders
+        # Decode using Best Path
+        if self.decoder_type == DecoderType.BestPath:
+            self.decoder = tf.nn.ctc_greedy_decoder(inputs=self.ctc_3d, sequence_length=self.seq_len)
+
+        # Decode using Beam Search
+        elif self.decoder_type == DecoderType.BeamSearch:
+            self.decoder = tf.nn.ctc_beam_search_decoder(inputs=self.ctc_3d, sequence_length=self.seq_len,
+                                                         beam_width=50)
 
     def setup_tf(self) -> Tuple[tf.compat.v1.Session, tf.compat.v1.train.Saver]:
         pass
