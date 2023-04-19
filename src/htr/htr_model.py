@@ -268,3 +268,8 @@ class Model:
             prob = np.exp(-loss)
 
         return texts, prob
+
+    def save(self) -> None:
+        """ Save Model to file """
+        self.snap_ID += 1  # increment snapshot ID
+        self.saver.save(self.session, './model/snapshot', global_step=self.snap_ID)
