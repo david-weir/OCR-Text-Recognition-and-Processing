@@ -45,7 +45,7 @@ class Model:
         with tf.control_dependencies(self.update_ops):
             self.optimiser = tf.compat.v1.train.AdamOptimizer().minimize(self.loss)
 
-        self.session, self.saver = self.setup_tf  # initialize tf
+        self.session, self.saver = self.setup_tf()  # initialize tf
 
     def setup_cnn(self) -> None:
         """ Creates Convolution Neural Network (CNN) Layers (currently NN consists of 5 CNN layers) """
@@ -98,7 +98,7 @@ class Model:
 
         # Bidirectional RNN - forward + backwards (2 output seqs 32x256)
         (fw, bw), _ = tf.compat.v1.nn.bidirectional_dynamic_rnn(cell_fw=stacked, cell_bw=stacked,
-                                                                input=rnn_3d, dtype=rnn_3d.dtype)
+                                                                inputs=rnn_3d, dtype=rnn_3d.dtype)
 
         # concatenate forward + backwards cells along the 2nd dimension -> expand dimension @ axis 2
         concat = tf.expand_dims(tf.concat([fw, bw], 2), 2)  # outputs seq of size 32x512
