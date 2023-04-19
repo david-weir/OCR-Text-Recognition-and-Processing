@@ -73,15 +73,25 @@ def quit_mp3player():
     playing = False
     mixer.music.stop()
 
+def delete_folder():
+    directory = 'mp3_segments'
+    current_dir = os.getcwd()
+
+    path = os.path.join(current_dir, directory)
+    shutil.rmtree(path)
+
 def create_mp3s(file, track_list):
     playlist = []
+    try:
+        os.mkdir('mp3_segments')
+    except OSError:
+        delete_folder()
+        os.mkdir('mp3_segments')
 
-    os.mkdir('mp3_segments')
-
-    mp3 = text_model.get_textfile()
+    mp3 = text_model.get_output_file()
     tracks = convert.split_txtfile(mp3)
     for track in tracks:
-        rec = convert.download_split_mp3("en", track, "mp3_segments") #language
+        rec = convert.download_split_mp3(text_model.get_curr_language(), track, "mp3_segments") #language
         if file:
             stripped_name = rec.replace("mp3_segments/", "").replace(".mp3", "")
             name = "{} - {}".format(file, stripped_name)
@@ -92,13 +102,6 @@ def create_mp3s(file, track_list):
         playlist.append(rec)
 
     return playlist
-
-def delete_folder():
-    directory = 'mp3_segments'
-    current_dir = os.getcwd()
-
-    path = os.path.join(current_dir, directory)
-    shutil.rmtree(path)
 
 def popup_window(file):
     window = Toplevel()
@@ -146,3 +149,4 @@ def popup_window(file):
     while playing == True:
         if not mixer.music.get_busy() and not paused:
             play_next_track(track_list, playlist)
+        window.update()
