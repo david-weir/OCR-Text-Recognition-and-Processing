@@ -68,7 +68,7 @@ class IAMLoader:
 
         # populate lists with words
         self.train_words = [x.gt_text for x in self.train_samples]
-        self.validation_samples = [x.gt_text for x in self.validation_samples]
+        self.validation_words = [x.gt_text for x in self.validation_samples]
 
         # start on training set
         self.train_set()
