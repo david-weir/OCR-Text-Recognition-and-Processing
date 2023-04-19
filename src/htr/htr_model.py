@@ -191,4 +191,19 @@ class Model:
         """ Train NN using batch """
         num_batches = len(batch.imgs)
         max_len = batch.imgs[0].shape[0] // 4
-        sparse = self.to_sparse(batch.gt_texts)
+        sparse = self.to_sparse(batch.gt_texts)  # convert gts to sparse tensors
+
+        eval = [self.optimiser, self.loss]
+
+        # feeds values to tf placeholders
+        feed_dict = {
+            self.input_imgs: batch.imgs,
+            self.gt: sparse,
+            self.seq_len: [max_len] * num_batches,
+            self.is_train: True
+        }
+
+        _, loss = self.session.run(eval, feed_dict)  # run tf session
+        self.batches_trained += 1  # increment trained batches count
+
+        return loss
