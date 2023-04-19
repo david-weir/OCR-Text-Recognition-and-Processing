@@ -2,6 +2,7 @@
 from typing import List, Tuple
 import tensorflow as tf
 import sys
+from htr_loaddata import Batch
 
 
 class DecoderType:
@@ -161,3 +162,33 @@ class Model:
             session.run(tf.compat.v1.global_variables_initializer())
 
         return session, saver
+
+    def to_sparse(self, texts: List[str]) -> Tuple[List[List[int]], List[int], List[int]]:
+        """ Convert ground texts into sparse tensors """
+
+        # 3 component dense tensors of the sparse tensor
+        indices, vals = [], []
+        shape = [len(texts), 0]  # last entry = max(labelList[i])
+
+        # loop over all ground texts
+        for ele, text in enumerate(texts):
+
+            # convert to label string (class-id)
+            labels = [self.chars.index(c) for c in text]
+
+            # check that sparse tensor has size of max label
+            if len(labels) > shape[1]:
+                shape[1] = len(labels)
+
+            # convert each label into sparse tensor i.e. populate the dense tensors: indices and values
+            for i, label in enumerate(labels):
+                indices.append([ele, i])
+                vals.append(label)
+
+        return indices, vals, shape
+
+    def train_batch(self, batch: Batch) -> float:
+        """ Train NN using batch """
+        num_batches = len(batch.imgs)
+        max_len = batch.imgs[0].shape[0] // 4
+        sparse = self.to_sparse(batch.gt_texts)
