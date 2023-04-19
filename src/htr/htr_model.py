@@ -5,6 +5,8 @@ import sys
 from htr_loaddata import Batch
 import numpy as np
 
+# Disable eager mode - eager execution not compatible with tf.placeholder()
+tf.compat.v1.disable_eager_execution()
 
 class DecoderType:
     """ CTC decoder types """
@@ -17,8 +19,8 @@ class Model:
     """ Tensorflow model for HTR """
 
     def __init__(self, chars: List[str], decoder_type: str = DecoderType.BestPath,
-                 restore: bool = False, dump: bool = False) -> None:
-        self.dump = dump
+                 restore: bool = False) -> None:
+        # self.dump = dump
         self.chars = chars
         self.decoder_type = decoder_type
         self.restore = restore
