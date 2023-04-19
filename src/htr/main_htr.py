@@ -7,6 +7,7 @@ from htr_loaddata import IAMLoader, Batch
 from htr_model import Model, DecoderType
 from iam_preprocessing import Preprocessor
 from path import Path
+import cv2
 
 class Paths:
     """ Filepaths to data """
@@ -139,6 +140,16 @@ def validate(model: Model, loader: IAMLoader, line_mode: bool) -> Tuple[float, f
         return char_err_rate, word_accr
 
 def infer(model: Model, input_img: Path) -> None:
-    """ Recognise text from an input image """
-    pass
+    """ Recognise text from an individual input image """
+    img = cv2.imread(input_img, cv2.IMREAD_GRAYSCALE)
+    assert img is not None
+
+    preprocessor = Preprocessor(get_img_size(), dynamic_width=True, padding=16)
+    img = preprocessor.process_img(img)
+
+    batch = Batch([img], None, 1)
+    recognised, prob = model.inference_batch(batch, True)
+
+    print(f'Recognised: "{recognised[0]}"')
+    print(f'Probability: {prob[0]}')
 
