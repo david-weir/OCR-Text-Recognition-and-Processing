@@ -9,8 +9,7 @@ test-job2:
   stage: test
   before_script:
     - pip install -r requirements.txt
-    - import nltk
-    - nltk.download('punkt')
+    - python install_nltk.py
   script:
     - python -m unittest discover test "test*.py"
 
