@@ -207,3 +207,19 @@ class Model:
         self.batches_trained += 1  # increment trained batches count
 
         return loss
+
+    def to_text(self, ctc_output: tuple, batchsize: int) -> List[str]:  #
+        """ Extract texts from CTC decoder output """
+
+        # TF Decoders: label strings in sparse tensor
+        decoded = ctc_output[0][0]  # first element (sparse tensor) of ctc output
+        labels_str = [[] for _ in range(batchsize)]  # list of label strings for each batch element
+
+        # loop over all indices
+        for (index, index_2d) in enumerate(decoded.indices):
+            label = decoded.vals[index]
+            batch_ele = index_2d[0]
+            labels_str[batch_ele].append(label)
+
+        # map labels to chars for all batch elements
+        return [''.join([self.chars[c] for c in labelStr]) for labelStr in labels_str]
