@@ -1,6 +1,7 @@
 # htr model
 from typing import List, Tuple
 import tensorflow as tf
+import sys
 
 
 class DecoderType:
@@ -137,4 +138,26 @@ class Model:
                                                          beam_width=50)
 
     def setup_tf(self) -> Tuple[tf.compat.v1.Session, tf.compat.v1.train.Saver]:
-        pass
+        """ Setup Tensorflow """
+        # print tf and python versions
+        print('Python: ' + sys.version)
+        print('Tensorflow: ' + tf.__version__)
+
+        session = tf.compat.v1.Session()  # open tf session
+        saver = tf.compat.v1.train.Saver(max_to_keep=1)  # keeps max 1 checkpoint file
+        model_dir = './model/'
+        snapshot = tf.train.latest_checkpoint(model_dir)  # retrieves checkpoint state from the model dir
+
+        # to restore model for inference requires an existing latest snapshot
+        if self.restore and not snapshot:
+            raise Exception('No saved model found in: ' + model_dir)
+
+        # loading model if available
+        if snapshot:
+            print('Initiating with stored values from ' + snapshot)
+            saver.restore(session, snapshot)
+        else:
+            print('Initiating with new values...')
+            session.run(tf.compat.v1.global_variables_initializer())
+
+        return session, saver
