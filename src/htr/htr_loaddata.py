@@ -16,7 +16,7 @@ https://fki.tic.heia-fr.ch/databases/iam-handwriting-database
 
 
 class IAMLoader:
-    def __init__(self, data_dir: Path, batchsize: int, data_split: 0.95) -> None:
+    def __init__(self, data_dir: Path, batchsize: int, data_split: float = 0.95) -> None:
 
         assert data_dir.exists()
 
@@ -25,7 +25,7 @@ class IAMLoader:
         self.batchsize = batchsize
         self.samples = []
 
-        words_file = open("../words.txt")  # summary of word data in IAM Dataset
+        words_file = open("./words.txt")  # summary of word data in IAM Dataset
         chars = set()
         broken_words = ['a01-117-05-02', 'r06-022-03-05']  # ids of known broken word images
 
