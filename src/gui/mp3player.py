@@ -73,10 +73,20 @@ def quit_mp3player():
     playing = False
     mixer.music.stop()
 
+def delete_folder():
+    directory = 'mp3_segments'
+    current_dir = os.getcwd()
+
+    path = os.path.join(current_dir, directory)
+    shutil.rmtree(path)
+
 def create_mp3s(file, track_list):
     playlist = []
-
-    os.mkdir('mp3_segments')
+    try:
+        os.mkdir('mp3_segments')
+    except OSError:
+        delete_folder()
+        os.mkdir('mp3_segments')
 
     mp3 = text_model.get_output_file()
     tracks = convert.split_txtfile(mp3)
@@ -92,13 +102,6 @@ def create_mp3s(file, track_list):
         playlist.append(rec)
 
     return playlist
-
-def delete_folder():
-    directory = 'mp3_segments'
-    current_dir = os.getcwd()
-
-    path = os.path.join(current_dir, directory)
-    shutil.rmtree(path)
 
 def popup_window(file):
     window = Toplevel()
