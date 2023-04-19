@@ -1,5 +1,8 @@
 import json
 from typing import List, Tuple
+
+import editdistance
+
 from htr_loaddata import IAMLoader, Batch
 from htr_model import Model, DecoderType
 from iam_preprocessing import Preprocessor
@@ -76,7 +79,7 @@ def train(model: Model, loader: IAMLoader, line_mode: bool, early_stopping: int 
         summ_char_err.append(char_err_rate)
         summ_word_accr.append(word_accr)
         write_summary(summ_char_err, summ_word_accr)
-        
+
         # if validation accr has improved => save new model params
         if char_err_rate < best_char_err:
             print('The Character Error Rate has improved: saving model...')
@@ -94,7 +97,46 @@ def train(model: Model, loader: IAMLoader, line_mode: bool, early_stopping: int 
 
 def validate(model: Model, loader: IAMLoader, line_mode: bool) -> Tuple[float, float]:
     """ Validate NN """
-    pass
+    print('Validate NN')
+    loader.validation_set()
+    preprocessor = Preprocessor(get_img_size(line_mode), line_mode=line_mode)
+
+    char_err = 0
+    total_char = 0
+    corr_words = 0  # a.k.a ok words
+    total_words = 0
+
+    while loader.has_next():
+        iter_info = loader.get_iterator_info()
+        print(f'Batch: {iter_info[0]} / {iter_info[1]}')
+
+        batch = loader.get_next()
+        batch = preprocessor.process_batch(batch)
+        recognised, _ = model.inference_batch(batch)
+        print('Ground Truth -> Recognized')
+
+        # for element in all recognised words
+        for i in range(len(recognised)):
+            # update ok words and total words
+            corr_words += 1 if batch.gt_texts[i] == recognised else 0
+            total_words +=1
+
+            # calculate edit distance between recognised text and ground truth text
+            dist = editdistance.eval(recognised[i], batch.gt_texts[i])
+
+            # update character error (from edit dist) and total chars seen
+            char_err += dist
+            total_char += len(batch.gt_texts)
+
+            print('[OK]' if dist == 0 else '[ERR:%d]' % dist, '"' + batch.gt_texts[i] + '"', '->',
+                  '"' + recognised[i] + '"')
+
+        # print complete validation results
+        char_err_rate = char_err / total_char
+        word_accr = corr_words / total_words
+        print(f'Character Error Rate: {char_err_rate * 100.0}%. Word accuracy: {word_accr * 100.0}%.')
+
+        return char_err_rate, word_accr
 
 def infer(model: Model, input_img: Path) -> None:
     """ Recognise text from an input image """
