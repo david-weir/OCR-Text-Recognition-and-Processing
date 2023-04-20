@@ -141,6 +141,20 @@ class Model:
             self.decoder = tf.nn.ctc_beam_search_decoder(inputs=self.ctc_3d, sequence_length=self.seq_len,
                                                          beam_width=50)
 
+        # word beam search decoding (see https://github.com/githubharald/CTCWordBeamSearch)
+        elif self.decoder_type == DecoderType.WordBeamSearch:
+            # prepare info about language
+            chars = ''.join(self.chars)  # characters in dataset
+            word_chars = open('./model/wordCharList.txt').read().splitlines()[0]  # chars forming words
+            corpus = open('./data/corpus.txt').read()  # dictionary/corpus
+
+            from word_beam_search import WordBeamSearch
+            # uses "Words" mode of WBS
+            self.decoder = WordBeamSearch(50, 'Words', 0.0, corpus.encode('utf8'),
+                                          chars.encode('utf8'), word_chars.encode('utf8'))
+
+            self.wbs_input = tf.nn.softmax(self.ctc_3d, axis=2)  # wbs decoder requires pre-applying softmax alg.
+
     def setup_tf(self) -> Tuple[tf.compat.v1.Session, tf.compat.v1.train.Saver]:
         """ Setup Tensorflow """
         # print tf and python versions
