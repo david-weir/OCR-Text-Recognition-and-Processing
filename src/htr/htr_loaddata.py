@@ -95,7 +95,7 @@ class IAMLoader:
 
     ''' Get current batch index & overall batch count '''
     def get_iterator_info(self) -> Tuple[int, int]:
-        # grab number of batches
+        # grab number of batches (batch/total number of batches)
         if self.curr_set == 'train':
             num_batches = int(np.floor(len(self.samples) / self.batchsize))  # train set: only full-sized batches
         else:
