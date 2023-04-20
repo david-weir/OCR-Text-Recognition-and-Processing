@@ -246,30 +246,6 @@ class Model:
         # map labels to chars for all batch elements
         return [''.join([self.chars[c] for c in labelStr]) for labelStr in labels_str]
 
-    # def to_text(self, ctc_output: tuple, batch_size: int) -> List[str]:
-    #     """Extract texts from output of CTC decoder."""
-    #
-    #     # word beam search: already contains label strings
-    #     if self.decoder_type == DecoderType.WordBeamSearch:
-    #         label_strs = ctc_output
-    #
-    #     # TF decoders: label strings are contained in sparse tensor
-    #     else:
-    #         # ctc returns tuple, first element is SparseTensor
-    #         decoded = ctc_output[0][0]
-    #
-    #         # contains string of labels for each batch element
-    #         label_strs = [[] for _ in range(batch_size)]
-    #
-    #         # go over all indices and save mapping: batch -> values
-    #         for (idx, idx2d) in enumerate(decoded.indices):
-    #             label = decoded.values[idx]
-    #             batch_element = idx2d[0]  # index according to [b,t]
-    #             label_strs[batch_element].append(label)
-    #
-    #     # map labels to chars for all batch elements
-    #     return [''.join([self.chars[c] for c in labelStr]) for labelStr in label_strs]
-
     def inference_batch(self, batch: Batch, calc_prob: bool = False, gt_prob: bool = False):
         """ Recognise texts in a batch using the NN """
 
@@ -321,61 +297,6 @@ class Model:
             prob = np.exp(-loss)
 
         return texts, prob
-
-
-    # def inference_batch(self, batch: Batch, calc_probability: bool = False, probability_of_gt: bool = False):
-    #     """Feed a batch into the NN to recognize the texts."""
-    #
-    #     # decode, optionally save RNN output
-    #     num_batch_elements = len(batch.imgs)
-    #
-    #     # put tensors to be evaluated into list
-    #     eval_list = []
-    #
-    #     if self.decoder_type == DecoderType.WordBeamSearch:
-    #         eval_list.append(self.wbs_input)
-    #     else:
-    #         eval_list.append(self.decoder)
-    #
-    #     if calc_probability:
-    #         eval_list.append(self.ctc_3d)
-    #
-    #     # sequence length depends on input image size (model downsizes width by 4)
-    #     max_text_len = batch.imgs[0].shape[0] // 4
-    #
-    #     # dict containing all tensor fed into the model
-    #     feed_dict = {self.input_imgs: batch.imgs, self.seq_len: [max_text_len] * num_batch_elements,
-    #                  self.is_train: False}
-    #
-    #     # evaluate model
-    #     eval_res = self.session.run(eval_list, feed_dict)
-    #
-    #     # TF decoders: decoding already done in TF graph
-    #     if self.decoder_type != DecoderType.WordBeamSearch:
-    #         decoded = eval_res[0]
-    #     # word beam search decoder: decoding is done in C++ function compute()
-    #     else:
-    #         decoded = self.decoder.compute(eval_res[0])
-    #
-    #     # map labels (numbers) to character string
-    #     texts = self.to_text(decoded, num_batch_elements)
-    #
-    #     # feed RNN output and recognized text into CTC loss to compute labeling probability
-    #     probs = None
-    #     if calc_probability:
-    #         sparse = self.to_sparse(batch.gt_texts) if probability_of_gt else self.to_sparse(texts)
-    #         ctc_input = eval_res[1]
-    #         eval_list = self.loss_per_element
-    #         feed_dict = {self.saved_ctc_input: ctc_input, self.gt: sparse,
-    #                      self.seq_len: [max_text_len] * num_batch_elements, self.is_train: False}
-    #         loss_vals = self.session.run(eval_list, feed_dict)
-    #         probs = np.exp(-loss_vals)
-    #
-    #     # dump the output of the NN to CSV file(s)
-    #     # if self.dump:
-    #     #     self.dump_nn_output(eval_res[1])
-    #
-    #     return texts, probs
 
     def save(self) -> None:
         """ Save Model to file """
