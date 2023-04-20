@@ -5,6 +5,8 @@ from path import Path
 from typing import Tuple
 import numpy as np
 import cv2
+import lmdb
+import pickle
 
 Sample = namedtuple('Sample', 'gt_text, file_path')
 Batch = namedtuple('Batch', 'imgs, gt_texts, batchsize')
@@ -16,9 +18,14 @@ https://fki.tic.heia-fr.ch/databases/iam-handwriting-database
 
 
 class IAMLoader:
-    def __init__(self, data_dir: Path, batchsize: int, data_split: float = 0.95) -> None:
+    def __init__(self, data_dir: Path, batchsize: int, data_split: float = 0.95, fast: bool = True) -> None:
 
         assert data_dir.exists()
+
+        # fast image loading
+        self.fast = fast
+        if fast:
+            self.env =lmdb.open(str(data_dir / 'lmdb'), readonly=True)
 
         self.data_augment = False
         self.curr_index = 0
@@ -115,7 +122,14 @@ class IAMLoader:
 
     ''' Gets image '''
     def get_img(self, i: int) -> np.ndarray:
-        img = cv2.imread(self.samples[i].file_path, cv2.IMREAD_GRAYSCALE)
+
+        if self.fast:
+            with self.env.begin() as txn:
+                basename = Path(self.samples[i].file_path).basename()
+                data = txn.get(basename.encode("ascii"))
+                img = pickle.loads(data)
+        else:
+            img = cv2.imread(self.samples[i].file_path, cv2.IMREAD_GRAYSCALE)
 
         return img
 

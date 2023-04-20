@@ -167,6 +167,7 @@ def parser() -> argparse.Namespace:
                         default='bestpath')
     parser.add_argument('--batch_size', help='Batch size.', type=int, default=100)
     parser.add_argument('--data_dir', help='Directory containing IAM dataset.', type=Path, required=False)
+    parser.add_argument('--fast', help='Load samples from LMDB.', action='store_true')
     parser.add_argument('--line_mode', help='Train to read text lines instead of single words.', action='store_true')
     parser.add_argument('--img_file', help='Input image used for inference.', type=Path, default='../data/word.png')
     parser.add_argument('--early_stopping', help='Early stopping epochs.', type=int, default=25)
@@ -185,7 +186,7 @@ def main():
 
     # if training mode
     if args.mode == 'train':
-        loader = IAMLoader(args.data_dir, args.batch_size)
+        loader = IAMLoader(args.data_dir, args.batch_size, fast=args.fast)
 
         char_list = loader.char_list  # load character list
 
@@ -205,7 +206,7 @@ def main():
 
     # evaluate model on validation set
     elif args.mode == 'validate':
-        loader = IAMLoader(args.data_dir, args.batch_size)
+        loader = IAMLoader(args.data_dir, args.batch_size, fast=args.fast)
         model = Model(char_lst(), decoderType, restore=True)
         validate(model, loader, args.line_mode)
 
