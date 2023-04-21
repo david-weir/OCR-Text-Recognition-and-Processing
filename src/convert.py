@@ -2,8 +2,6 @@ from gtts import gTTS
 import os
 from fpdf import FPDF
 import textwrap
-from pygame import mixer
-import time
 
 def download_mp3(lang, file):
     with open(file) as f:
@@ -29,22 +27,6 @@ def download_split_mp3(lang, file, directory):
 
     return "{}/{}.mp3".format(directory, file_name)
 
-    # os.system("mpg321 speech.mp3")
-def play_mp3(lang, file):
-    with open(file) as f:
-        text = f.read()
-
-    recording = gTTS(text=text, lang=lang, slow=False, tld='ie')
-    recording.save("test.mp3")
-    
-    mixer.init()
-    mixer.music.load("test.mp3")
-    mixer.music.play(0)
-    # time.sleep(2)
-    # os.system("mpg321 speech.mp3")
-
-
-# convert_to_mp3("en", "text.txt")
 # https://stackoverflow.com/questions/10112244/convert-plain-text-to-pdf-in-python
 def convert_to_pdf(text, filename):
     a4_width_mm = 210
@@ -74,13 +56,6 @@ def convert_to_pdf(text, filename):
 
     pdf.output(filename, 'F')
 
-# input_filename = 'text.txt'
-# output_filename = 'output.pdf'
-# file = open(input_filename)
-# text = file.read()
-# file.close()
-# convert_to_pdf(text, output_filename)
-
 
 def split_txtfile(txtfile):
     with open(txtfile, 'r') as f:
@@ -94,5 +69,3 @@ def split_txtfile(txtfile):
                     files.append("part_{}.txt".format(c+1))
 
         return files
-
-# split_txtfile('text.txt')
