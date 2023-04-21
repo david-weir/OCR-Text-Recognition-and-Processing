@@ -8,12 +8,15 @@ import time
 def download_mp3(lang, file):
     with open(file) as f:
         text = f.read()
-
+    
     recording = gTTS(text=text, lang=lang, slow=False)
-    file_name = file.replace(".txt", "")
-    recording.save("{}.mp3".format(file_name))
+    file_name = os.path.basename(file).replace(".txt", ".mp3")
+    file_path = os.path.dirname(file)
 
-    return "{}.mp3".format(file_name)
+    new_file = os.path.join(file_path, file_name)
+    recording.save(new_file)
+
+    return file_name
 
 def download_split_mp3(lang, file, directory):
     path = directory + '/' + file
