@@ -1,6 +1,6 @@
 import unittest
 import os
-import src.convert as convert
+from src.convert import download_mp3
 import pathlib
 from mutagen.mp3 import MP3
 
@@ -11,7 +11,7 @@ class TestAudio(unittest.TestCase):
         path = pathlib.Path(__file__).parent.resolve()
 
         text_path = os.path.join(path, text)
-        convert.download_mp3("en", text_path)
+        download_mp3("en", text_path)
         new_path = os.path.join(path, 'englishtext.mp3')
         audio = MP3(new_path)
         
