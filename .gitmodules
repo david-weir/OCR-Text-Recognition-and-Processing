@@ -1,0 +1,3 @@
+[submodule "src/htr/CTCWordBeamSearch"]
+	path = src/htr/CTCWordBeamSearch
+	url = https://github.com/githubharald/CTCWordBeamSearch
