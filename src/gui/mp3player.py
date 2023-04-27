@@ -67,7 +67,9 @@ def pause():
         mixer.music.unpause()
         paused = False
 
-def select_track(track_list, dictionary):  
+def select_track(track_list, dictionary, window):  
+    global playing
+    
     track_index = track_list.curselection()[0]
     mixer.music.stop()
 
@@ -75,6 +77,9 @@ def select_track(track_list, dictionary):
     track_list.selection_clear(ACTIVE)
     mixer.music.load(dictionary[track])
     mixer.music.play()
+
+    if not playing:
+        play_all(track_list, dictionary, window)
 
 def stop(track_list):
     mixer.music.stop()
