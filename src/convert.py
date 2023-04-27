@@ -2,46 +2,20 @@ from gtts import gTTS
 import os
 from fpdf import FPDF
 import textwrap
-from pygame import mixer
-import time
 
 def download_mp3(lang, file):
     with open(file) as f:
         text = f.read()
-
-    recording = gTTS(text=text, lang=lang, slow=False)
-    file_name = file.replace(".txt", "")
-    recording.save("{}.mp3".format(file_name))
-
-    return "{}.mp3".format(file_name)
-
-def download_split_mp3(lang, file, directory):
-    path = directory + '/' + file
-    with open(path) as f:
-        text = f.read()
-
-    recording = gTTS(text=text, lang=lang, slow=False)
-    file_name = file.replace(".txt", "")
-    recording.save("{}/{}.mp3".format(directory, file_name))
-
-    return "{}/{}.mp3".format(directory, file_name)
-
-    # os.system("mpg321 speech.mp3")
-def play_mp3(lang, file):
-    with open(file) as f:
-        text = f.read()
-
-    recording = gTTS(text=text, lang=lang, slow=False, tld='ie')
-    recording.save("test.mp3")
     
-    mixer.init()
-    mixer.music.load("test.mp3")
-    mixer.music.play(0)
-    # time.sleep(2)
-    # os.system("mpg321 speech.mp3")
+    recording = gTTS(text=text, lang=lang, slow=False)
+    file_name = os.path.basename(file).replace(".txt", ".mp3")
+    file_path = os.path.dirname(file)
 
+    new_file = os.path.join(file_path, file_name)
+    recording.save(new_file)
 
-# convert_to_mp3("en", "text.txt")
+    return new_file
+
 # https://stackoverflow.com/questions/10112244/convert-plain-text-to-pdf-in-python
 def convert_to_pdf(text, filename):
     a4_width_mm = 210
@@ -71,25 +45,18 @@ def convert_to_pdf(text, filename):
 
     pdf.output(filename, 'F')
 
-# input_filename = 'text.txt'
-# output_filename = 'output.pdf'
-# file = open(input_filename)
-# text = file.read()
-# file.close()
-# convert_to_pdf(text, output_filename)
 
-
-def split_txtfile(txtfile):
+def split_txtfile(txtfile, directory):
+    path = os.path.dirname(txtfile)
+    new_path = os.path.join(path, directory)
     with open(txtfile, 'r') as f:
         words = f.read()
         words_lst = words.split()
         files = []
         chunk = 100
         for c, i in enumerate(range(0, len(words_lst), chunk)):
-                with open("mp3_segments/part_{}.txt".format(c+1), "w") as out:
+                with open("{}/part_{}.txt".format(new_path, c+1), "w") as out:
                     out.write(" ".join(words_lst[i:i+chunk]))
-                    files.append("part_{}.txt".format(c+1))
+                    files.append("{}/part_{}.txt".format(new_path, c+1))
 
         return files
-
-# split_txtfile('text.txt')

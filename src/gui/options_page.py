@@ -5,8 +5,12 @@ import edit_page
 import upload_page
 import mp3player
 
+from textModel import *
+
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import convert
 
 class OptionsPage(Frame):
     
@@ -55,7 +59,7 @@ class OptionsPage(Frame):
                 audio_name_label.pack(side='left')
                 Entry(audio_frame, textvariable=audio_filename).pack(side='left', padx=5)
 
-                Button(audio_frame, text="Download").pack(side='right', padx=5)
+                Button(audio_frame, text="Download", command=lambda: convert.download_mp3(text_model.get_curr_language(), text_model.get_output_file())).pack(side='right', padx=5)
                 Button(audio_frame, text="Play", command=lambda: mp3player.popup_window(audio_filename.get())).pack(side='right', padx=5)
         
         Button(center, text="Confirm", command= lambda: show_options_frame()).place(relx=0.5, rely=0.6, anchor=CENTER)
