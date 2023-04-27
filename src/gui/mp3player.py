@@ -9,45 +9,54 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import convert
 
 paused = False
-current_track = 0
-playing = True
+playing = False
 
-def play(index, playlist):
-    global current_track
-    current_track = index
-    mixer.music.load(playlist[current_track])
+def begin_play(dictionary, track_list, window):
+    global playing
+    playing = True
+    track = track_list.get(0)
+    mixer.music.load(dictionary[track])
     mixer.music.play()
 
-def play_next_track(track_list, playlist):
-    global current_track
-    current_track += 1
+    track_list.activate(0)
+    track_list.selection_set(0, last=None)
+    play_all(track_list, dictionary, window)
 
-    if current_track < len(playlist):
-        mixer.music.load(playlist[current_track])
+def play_all(track_list, dictionary, window):
+    global playing
+    while playing:
+        if not mixer.music.get_busy() and not paused:
+            play_next_track(track_list, dictionary)
+        window.update()
+
+def play_next_track(track_list, dictionary):
+    track_index = track_list.curselection()[0]+1
+    if track_index < len(dictionary):
+        next_track = track_list.get(track_index)
+        
+        mixer.music.load(dictionary[next_track])
         mixer.music.play()
 
-    track_list.selection_clear(0, tk.END)
-    track_list.activate(current_track)
-    track_list.selection_set(current_track, last=None)
+        track_list.selection_clear(0, tk.END)
+        track_list.activate(track_index)
+        track_list.selection_set(track_index, last=None)
 
-def skip(track_list, playlist):
-    global current_track
+def skip(track_list, dictionary):
     mixer.music.stop()
+    play_next_track(track_list, dictionary)
 
-    play_next_track(track_list, playlist)
-
-def previous(track_list, playlist):
+def previous(track_list, dictionary):
     mixer.music.stop()
-    global current_track
-    current_track -= 1
-
-    if current_track >= 0 and current_track < len(playlist):
-        mixer.music.load(playlist[current_track])
+    track_index = track_list.curselection()[0]
+    previous_track = dictionary[track_index]
+    print(previous_track)
+    if track_index >= 0 and track_index < len(dictionary):
+        mixer.music.load(dictionary[previous_track])
         mixer.music.play()
 
-    track_list.selection_clear(0, tk.END)
-    track_list.activate(current_track)
-    track_list.selection_set(current_track, last=None)
+        track_list.selection_clear(0, tk.END)
+        track_list.activate(track_index)
+        track_list.selection_set(track_index, last=None)
 
 def pause():
     global paused
@@ -58,11 +67,14 @@ def pause():
         mixer.music.unpause()
         paused = False
 
-def select_track(track_list, playlist):  
-    track = track_list.curselection()[0]
-    if track:
-        mixer.music.stop()
-        play(track, playlist)
+def select_track(track_list, dictionary):  
+    track_index = track_list.curselection()[0]
+    mixer.music.stop()
+
+    track = track_list.get(track_index)
+    track_list.selection_clear(ACTIVE)
+    mixer.music.load(dictionary[track])
+    mixer.music.play()
 
 def stop(track_list):
     mixer.music.stop()
@@ -81,7 +93,7 @@ def delete_folder():
     shutil.rmtree(path)
 
 def create_mp3s(file, track_list):
-    playlist = []
+    dictionary = {}
     try:
         os.mkdir('mp3_segments')
     except OSError:
@@ -89,30 +101,29 @@ def create_mp3s(file, track_list):
         os.mkdir('mp3_segments')
 
     mp3 = text_model.get_output_file()
-    tracks = convert.split_txtfile(mp3)
+    tracks = convert.split_txtfile(mp3, 'mp3_segments')
     for track in tracks:
-        rec = convert.download_split_mp3(text_model.get_curr_language(), track, "mp3_segments") #language
+        rec = convert.download_mp3(text_model.get_curr_language(), track)
         if file:
             stripped_name = rec.replace("mp3_segments/", "").replace(".mp3", "")
             name = "{} - {}".format(file, stripped_name)
             track_list.insert(END, name)
+            dictionary[name] = rec
         else:
             stripped_name = rec.replace("mp3_segments/", "").replace(".mp3", "")
             track_list.insert(END, stripped_name)
-        playlist.append(rec)
+            dictionary[stripped_name] = rec
 
-    return playlist
+    return dictionary
 
 def popup_window(file):
     window = Toplevel()
     window.title("MP3 player")
     mixer.init()
     track_list = Listbox(window, bg='black', fg='white', width=50, selectbackground='green', selectforeground='black')
-
-    playlist = create_mp3s(file, track_list)
-
     track_list.pack(pady=20, padx=20)
-    track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list=track_list, playlist=playlist))
+
+    dictionary = create_mp3s(file, track_list)
 
     rewind_btn = PhotoImage(file='images/rewind.png') 
     pause_btn = PhotoImage(file='images/pause.png')
@@ -129,9 +140,10 @@ def popup_window(file):
     skip_button.image = skip_btn
     pause_button.image = pause_btn
 
-    rewind_button.bind('<Button>', lambda x: previous(track_list, playlist))
-    skip_button.bind('<Button>', lambda x: skip(track_list, playlist))
-    pause_button.bind('<Button>', lambda x: pause())
+    track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list=track_list, dictionary=dictionary))
+    rewind_button.bind('<Button>', lambda x: previous(track_list, dictionary))
+    skip_button.bind('<Button>', lambda x: skip(track_list, dictionary))
+    pause_button.bind('<Button>', lambda x: begin_play(dictionary, track_list, window))
 
     rewind_button.grid(row=0, column=0, padx=10)
     skip_button.grid(row=0, column=2, padx=10)
@@ -139,14 +151,3 @@ def popup_window(file):
 
     button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), delete_folder(), window.destroy()})
     button_close.pack(pady=10)
-
-    mixer.music.load(playlist[current_track])
-    mixer.music.play()
-
-    track_list.activate(current_track)
-    track_list.selection_set(current_track, last=None)
-
-    while playing == True:
-        if not mixer.music.get_busy() and not paused:
-            play_next_track(track_list, playlist)
-        window.update()

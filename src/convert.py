@@ -14,18 +14,7 @@ def download_mp3(lang, file):
     new_file = os.path.join(file_path, file_name)
     recording.save(new_file)
 
-    return file_name
-
-def download_split_mp3(lang, file, directory):
-    path = directory + '/' + file
-    with open(path) as f:
-        text = f.read()
-
-    recording = gTTS(text=text, lang=lang, slow=False)
-    file_name = file.replace(".txt", "")
-    recording.save("{}/{}.mp3".format(directory, file_name))
-
-    return "{}/{}.mp3".format(directory, file_name)
+    return new_file
 
 # https://stackoverflow.com/questions/10112244/convert-plain-text-to-pdf-in-python
 def convert_to_pdf(text, filename):
@@ -57,15 +46,17 @@ def convert_to_pdf(text, filename):
     pdf.output(filename, 'F')
 
 
-def split_txtfile(txtfile):
+def split_txtfile(txtfile, directory):
+    path = os.path.dirname(txtfile)
+    new_path = os.path.join(path, directory)
     with open(txtfile, 'r') as f:
         words = f.read()
         words_lst = words.split()
         files = []
         chunk = 100
         for c, i in enumerate(range(0, len(words_lst), chunk)):
-                with open("mp3_segments/part_{}.txt".format(c+1), "w") as out:
+                with open("{}/part_{}.txt".format(new_path, c+1), "w") as out:
                     out.write(" ".join(words_lst[i:i+chunk]))
-                    files.append("part_{}.txt".format(c+1))
+                    files.append("{}/part_{}.txt".format(new_path, c+1))
 
         return files
