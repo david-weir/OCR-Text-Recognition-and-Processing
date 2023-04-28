@@ -4,14 +4,19 @@ from detection import *
 import re
 
 class textModel:
-    def __init__(self, src_lang="", dst_lang="", format=""):
-        self.src_lang = src_lang
-        self.dst_lang = dst_lang
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.src_lang = ''
+        self.dst_lang = ''
         self.curr_lang = ''
-        self.format = format
-        self.text = "this is the sample piece of text to show that it is working."
-        self.textfile = ""
-        self.filename = ""
+        self.format = ''
+        self.text = ''
+        self.textfile = ''
+        self.output_file = ''
+        self.filename = ''
+        self.dir_path = ''
 
     def set_src_language(self):
         self.src_lang = detection_text(self.text)
