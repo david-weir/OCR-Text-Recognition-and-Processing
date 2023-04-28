@@ -60,13 +60,19 @@ class textModel:
     def set_output_file(self, output_file):
         self.output_file = output_file
 
-    def set_filename(self, filename):
-        fname = str(filename)
-        file = re.findall(r"'([^']*)'", fname)
-        f = file[0].split('/')[-1]
-        self.filename = f
+    def set_filename(self, file_path):
+        # fname = str(file_path)
+        # file = re.findall(r"'([^']*)'", fname)
+        filename = file_path.split('/')[-1]
+        self.filename = filename
 
     def get_filename(self):
         return self.filename
+
+    def get_dir_path(self):
+        return self.dir_path
+
+    def set_dir_path(self, dir_path):
+        self.dir_path = dir_path
 
 text_model = textModel()

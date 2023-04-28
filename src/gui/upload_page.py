@@ -4,6 +4,7 @@ import tkinter as tk
 from extras import *
 import edit_page
 from textModel import *
+from upload_popup import *
 
 class UploadPage(Frame):
     def __init__(self, parent, controller):
@@ -39,10 +40,10 @@ class UploadPage(Frame):
         label = Label(top_frame, text="Upload Documents", font=("Verdana", 20))
         label.place(relx=.5, rely=.5,anchor= CENTER)
         # files = Listbox(ctr_bottom, width=100, height=40)
-        files = Label(ctr_bottom, text="Uploaded PDF: ")
+        files = Label(ctr_bottom, text="Uploaded File: ")
         confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller))
 
-        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files, confirm_btn, ctr_bottom)])
+        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files, confirm_btn)])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -64,10 +65,11 @@ class UploadPage(Frame):
 
         def upload_type():
             if clicked.get() == "Printed":
-                open_images()
+                select_upload_type()
+                self.show_files(files, confirm_btn)
                 text_model.set_format("printed image")
             elif clicked.get() == "Handwritten":
-                open_images()
+                # open_images()
                 text_model.set_format("handwritten image")
 
         
@@ -75,12 +77,15 @@ class UploadPage(Frame):
         caller_button.place(relx=.5, rely=.7, anchor=CENTER)
 
 
-    def show_files(self, files, confirm_btn, ctr_bottom):
-        # files.insert(END, text_model.get_filename())
-        files.place(relx=0.3, rely=0.3)
-        file_name = Label(ctr_bottom, text=text_model.get_filename())
-        file_name.place(relx=0.5, rely=0.3)
-        confirm_btn.place(relx=0.4, rely=0.6)
+    def show_files(self, files, confirm_btn):
+        file_name = text_model.get_filename()
+        if file_name is not None: 
+            if files['text'] == "Uploaded File: ":
+                files['text'] += file_name
+            else:
+                files['text'] = "Uploaded File: " + file_name
+            files.pack(anchor=CENTER)
+            confirm_btn.pack(anchor=CENTER, pady=5)
     
     def show_next_btn(self, btm_frame, controller):
         next = Button(btm_frame, text ="Next",
