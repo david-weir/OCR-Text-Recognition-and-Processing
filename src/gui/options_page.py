@@ -70,7 +70,7 @@ class OptionsPage(Frame):
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text="Finish",
-               command = lambda : {controller.show_frame(upload_page.UploadPage), text_model.reset()})
+               command = lambda : {controller.show_frame(upload_page.UploadPage), text_model.reset(), self.delete_tmp_files()})
         next.pack(side='right', padx=8, pady=5)
 
     def delete_tmp_files(self):

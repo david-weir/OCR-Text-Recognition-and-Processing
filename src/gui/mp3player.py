@@ -121,6 +121,11 @@ def create_mp3s(file, track_list):
 
     return dictionary
 
+def closing(window):
+    quit_mp3player()
+    delete_folder()
+    window.destroy()
+
 def popup_window(file):
     window = Toplevel()
     window.title("MP3 player")
@@ -130,9 +135,10 @@ def popup_window(file):
 
     dictionary = create_mp3s(file, track_list)
 
-    rewind_btn = PhotoImage(file='images/rewind.png') 
+    rewind_btn = PhotoImage(file='images/back.png') 
     pause_btn = PhotoImage(file='images/pause.png')
     skip_btn = PhotoImage(file='images/skip.png')
+    play_btn = PhotoImage(file='images/play.png')
 
     controls = Frame(window)
     controls.pack()
@@ -140,19 +146,25 @@ def popup_window(file):
     rewind_button = Label(controls, image=rewind_btn, borderwidth=0, highlightthickness=0)
     skip_button = Label(controls, image=skip_btn, borderwidth=0, highlightthickness=0)
     pause_button = Label(controls, image=pause_btn, borderwidth=0, highlightthickness=0)
+    play_button = Label(controls, image=play_btn, borderwidth=0, highlightthickness=0)
 
     rewind_button.image = rewind_btn
     skip_button.image = skip_btn
     pause_button.image = pause_btn
+    play_button.image = play_btn
 
-    track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list=track_list, dictionary=dictionary))
+    track_list.bind("<<ListboxSelect>>", lambda x: select_track(track_list, dictionary, window))
     rewind_button.bind('<Button>', lambda x: previous(track_list, dictionary))
     skip_button.bind('<Button>', lambda x: skip(track_list, dictionary))
-    pause_button.bind('<Button>', lambda x: begin_play(dictionary, track_list, window))
+    pause_button.bind('<Button>', lambda x: pause())
+    play_button.bind('<Button>', lambda x: begin_play(dictionary, track_list, window))
 
     rewind_button.grid(row=0, column=0, padx=10)
-    skip_button.grid(row=0, column=2, padx=10)
-    pause_button.grid(row=0, column=1, padx=10)
+    play_button.grid(row=0, column=1, padx=10)
+    pause_button.grid(row=0, column=2, padx=10)
+    skip_button.grid(row=0, column=3, padx=10)
 
     button_close = tk.Button(window, text="Close", command= lambda: {quit_mp3player(), delete_folder(), window.destroy()})
     button_close.pack(pady=10)
+
+    window.protocol("WM_DELETE_WINDOW", lambda : closing(window))
