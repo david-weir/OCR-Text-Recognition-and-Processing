@@ -32,18 +32,38 @@ class EditPage(Frame):
         center.rowconfigure(0, minsize=250, weight=1)
         center.columnconfigure(1, weight=1)
 
-        message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
-        b = Button(center, text="Edit", command=lambda: {b.destroy(), message.destroy(), self.showpage(center, top_frame)})
-        message.pack(expand=True)
-        b.pack(expand=True)
+        # message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
+        # b = Button(center, text="Edit", command=lambda: {b.destroy(), message.destroy(), self.showpage(center, top_frame)})
+        # message.pack(expand=True)
+        # b.pack(expand=True)
+        # options = [
+        #     "Language",
+        #     "English",
+        #     "French",
+        #     "German"
+        # ]
+        
+        # # datatype of menu text
+        # clicked = StringVar()
+        # dropdown = OptionMenu(top_frame, clicked, *options)
+        # if not bool(message.winfo_ismapped()):
+        self.show_first_frame(center, top_frame)
+            # self.update()
+
 
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(upload_page.UploadPage))
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text ="Next",
-               command = lambda : controller.show_frame(translate_page.TranslatePage))
+               command = lambda : {controller.show_frame(translate_page.TranslatePage), self.reset_page(top_frame, center)})
         next.pack(side='right', padx=8, pady=5)
+
+    def show_first_frame(self, center, top_frame):
+        message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
+        b = Button(center, text="Edit", command=lambda: {b.pack_forget(), message.pack_forget(), self.showpage(center, top_frame)})
+        message.pack(expand=True)
+        b.pack(expand=True)
 
     def showpage(self, center, top_frame):
         options = [
@@ -112,3 +132,11 @@ class EditPage(Frame):
         with open(textfile, 'r') as text:
             tx = text.read()
             txt_edit.insert(tk.END, tx)
+
+    def reset_page(self, top_frame, center):
+        for widget in top_frame.winfo_children():
+            widget.destroy()
+        for widget in center.winfo_children():
+            widget.destroy()
+
+        self.show_first_frame(center, top_frame)

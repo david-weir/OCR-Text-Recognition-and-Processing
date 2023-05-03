@@ -1,7 +1,8 @@
 import unittest
 from src.translation import translate
-import jellyfish # need to install w pip
+import jellyfish
 import time
+import os
 
 class TestTranslation(unittest.TestCase):
 
@@ -14,11 +15,11 @@ class TestTranslation(unittest.TestCase):
         return normalised_score
 
     
-    def test_translation_en_de(self):
+    def test_translation_en_de_short(self):
         self.assertEqual(translate("en", "de", "Hello, world"), "Hallo, Welt")
 
 
-    def test_translation_eachway(self):
+    def test_translation_eachway_short(self):
         english_str = "Hello, world"
         german_str = translate("en", "de", english_str)
         new_english_str = translate("de", "en", german_str)
@@ -26,19 +27,38 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(english_str, new_english_str)
 
 
-    def test_translation_similarity(self):
-        self.assertGreaterEqual(self.normalise_levenshtein("hello", "hello"), 0.9)
+    def test_translation_en_fr_long(self):
+        eng_filepath = os.path.dirname(__file__) + "/" + 'englishtext.txt'
+        fr_filepath = os.path.dirname(__file__) + "/" + 'frenchtext.txt'
+        
+        english_file  = open(eng_filepath, 'r')
+        english_txt = english_file.read()
+        french_file = open(fr_filepath, 'r')
+        french_txt = french_file.read()
+
+        generated_french = translate('en', 'fr', english_txt)
+
+        self.assertGreaterEqual(self.normalise_levenshtein(french_txt, generated_french), 0.85)
+
+        english_file.close()
+        french_file.close()
 
 
     def test_translation_time(self):
-        start_time = time.time()
+        eng_filepath = os.path.dirname(__file__) + "/" + 'englishtext.txt'
+        english_file  = open(eng_filepath, 'r')
+        english_txt = english_file.read()
         
-        english_str = "Hello, world"
-        german_str = translate("en", "de", english_str)
-        end_time = time.time()
+        start_time = time.time()
 
+        translate("en", "fr", english_txt)
+        
+        end_time = time.time()
         elapsed_time = end_time - start_time
-        self.assertLessEqual(elapsed_time, 10.0)
+
+        english_file.close()
+
+        self.assertLessEqual(elapsed_time, 15.0)
 
 if __name__ == '__main__':
     unittest.main()

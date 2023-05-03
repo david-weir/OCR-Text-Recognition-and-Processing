@@ -4,14 +4,19 @@ from detection import *
 import re
 
 class textModel:
-    def __init__(self, src_lang="", dst_lang="", format=""):
-        self.src_lang = src_lang
-        self.dst_lang = dst_lang
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.src_lang = ''
+        self.dst_lang = ''
         self.curr_lang = ''
-        self.format = format
-        self.text = "this is the sample piece of text to show that it is working."
-        self.textfile = ""
-        self.filename = ""
+        self.format = ''
+        self.text = ''
+        self.textfile = ''
+        self.output_file = ''
+        self.filename = ''
+        self.dir_path = ''
 
     def set_src_language(self):
         self.src_lang = detection_text(self.text)
@@ -60,13 +65,19 @@ class textModel:
     def set_output_file(self, output_file):
         self.output_file = output_file
 
-    def set_filename(self, filename):
-        fname = str(filename)
-        file = re.findall(r"'([^']*)'", fname)
-        f = file[0].split('/')[-1]
-        self.filename = f
+    def set_filename(self, file_path):
+        # fname = str(file_path)
+        # file = re.findall(r"'([^']*)'", fname)
+        filename = file_path.split('/')[-1]
+        self.filename = filename
 
     def get_filename(self):
         return self.filename
+
+    def get_dir_path(self):
+        return self.dir_path
+
+    def set_dir_path(self, dir_path):
+        self.dir_path = dir_path
 
 text_model = textModel()
