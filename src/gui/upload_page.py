@@ -78,6 +78,7 @@ class UploadPage(Frame):
                 text_model.set_format("handwritten image")
 
         caller_button = Button(ctr_right, text="Select", command=lambda:{upload_type()})
+        caller_button.place(relx=.5, rely=.7, anchor=CENTER)
 
     def show_files(self, files, confirm_btn):
         file_name = text_model.get_filename()
