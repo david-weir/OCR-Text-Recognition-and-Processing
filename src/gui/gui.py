@@ -6,15 +6,14 @@ from edit_page import *
 from translate_page import *
 from options_page import *
 
+#https://www.geeksforgeeks.org/tkinter-application-to-switch-between-different-page-frames/
 class OCRApp(Tk):
     
-    # __init__ function for class tkinterApp
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs): # init for OCRApp
+
+        Tk.__init__(self, *args, **kwargs) # init for Tk
         
-        # __init__ function for class Tk
-        Tk.__init__(self, *args, **kwargs)
-        
-        self.geometry('650x400')
+        self.geometry('650x400') # set size and title of the gui
         self.title("OCR Text to Speech Reading Aid")
         
         # creating a container
@@ -24,27 +23,24 @@ class OCRApp(Tk):
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
 
-        # initializing frames to an empty array
+        # create an array for the frames
         self.frames = {}
 
-        # iterating through a tuple consisting
-        # of the different page layouts
+
         for F in (UploadPage, EditPage, TranslatePage, OptionsPage):
-            frame = F(container, self)
-            self.frames[F] = frame
+            frame = F(container, self) #create a container for each page 
+            self.frames[F] = frame # add each frame into the array
 
             frame.grid(row = 0, column = 0, sticky ="nsew")
 
         self.show_frame(UploadPage)
 
-    # to display the current frame passed as
-    # parameter
-    def show_frame(self, cont):
+
+    def show_frame(self, cont): # raise the frame passed to the function
         frame = self.frames[cont]
         frame.tkraise()
 
 
-# Driver Code
 app = OCRApp()
-app.mainloop()
+app.mainloop() # run the app
 

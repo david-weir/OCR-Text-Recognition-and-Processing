@@ -2,40 +2,33 @@ from tkinter import *
 import tkinter as tk
 from textModel import *
 
+# save any changes made to the text
+def save(text_editor):
+    new_text = text_editor.get("1.0",END) # get all the text in the text box
+    new_file = 'translated.txt'
+    with open(new_file, 'w') as f:
+        f.write(new_text) # write the changes into the updated file
+        text_model.set_output_file(new_file)
+
+# show popup window of the translated/summarised text
 def view_new_version():
-    window = tk.Toplevel() 
-    window.geometry('500x330')
-    window.grid_rowconfigure(1, weight=1)
-    window.grid_columnconfigure(0, weight=1)
+    window = tk.Toplevel()  # create window of the popup
+    window.geometry('550x330')
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(1, weight=1)
 
-    # create all of the main containers
-    center = tk.Frame(window, width=450, height=40, padx=3, pady=3)
-    btm_frame = tk.Frame(window, width=450, height=45, pady=3)
-
-    # layout all of the main containers
-
-    center.grid(row=1, sticky="nsew")
-    btm_frame.grid(row=3, sticky="ew")
-
-    center.rowconfigure(0, minsize=250, weight=1)
-    center.columnconfigure(1, weight=1)
-
-    txt_edit = tk.Text(center)
-    fr_buttons = tk.Frame(center, relief=tk.RAISED, bd=2)
-    btn_open = tk.Button(fr_buttons, text="Save", command=lambda:text_model.set_text(txt_edit.get(1.0, tk.END)))
-    scroll = Scrollbar(center, command=txt_edit.yview)
-    txt_edit.configure(yscrollcommand=scroll.set)
+    # create the widgets for the window
+    text_editor = tk.Text(window)
+    side_menu = tk.Frame(window, relief=tk.RAISED, bd=2)
+    save_button = tk.Button(side_menu, text="Save", command=lambda:save(text_editor))
+    scroll = Scrollbar(window, command=text_editor.yview)
+    text_editor.configure(yscrollcommand=scroll.set)
 
     with open('translated.txt', 'r') as text:
-        tx = text.read()
-        txt_edit.insert(tk.END, tx)
+        tx = text.read() # load the textfile into the text box
+        text_editor.insert(tk.END, tx)
 
-    btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-
-    fr_buttons.grid(row=0, column=0, sticky="ns")
-    txt_edit.grid(row=0, column=1, sticky="nsew")
+    save_button.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+    side_menu.grid(row=0, column=0, sticky="ns")
+    text_editor.grid(row=0, column=1, sticky="nsew")
     scroll.grid(row=0, column=2, sticky='ns')
-
-    # next = Button(btm_frame, text ="Next",
-    #         command = lambda : pass)
-    # next.pack(side='right', padx=8, pady=5)

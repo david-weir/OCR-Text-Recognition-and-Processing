@@ -5,18 +5,18 @@ from nltk.tokenize import LineTokenizer
 import math
 
 def get_translation_model_and_tokenizer(src_lang, dst_lang):
-    if torch.cuda.is_available():  
+    if torch.cuda.is_available():  # use the gpu if it is available
         dev = "cuda"
     else:  
         dev = "cpu" 
-    device = torch.device(dev)
-    # construct our model name
-    model_name = f"Helsinki-NLP/opus-mt-{src_lang}-{dst_lang}"
-    # initialize the tokenizer & model
-    tokenizer = AutoTokenizer.from_pretrained(model_name) # need PyTorch not Tensorflow !!!
+    device = torch.device(dev) # set the device as gpu or cpu
+
+    model_name = f"Helsinki-NLP/opus-mt-{src_lang}-{dst_lang}" # translation model
+    # get the tokenizer and model for the language pair
+    tokenizer = AutoTokenizer.from_pretrained(model_name) 
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     model.to(device)
-    # return them for use
+
     return model, tokenizer, device
 
 def translate(src, dst, text):
@@ -48,10 +48,8 @@ def translate(src, dst, text):
     return translated_text
     # inputs = tokenizer.encode(text, return_tensors="pt", max_length=512, truncation=True)
 
-    """# generate the translation output using greedy search
-    greedy_outputs = model.generate(inputs)
-    # decode the output and ignore special tokens
-    print(tokenizer.decode(greedy_outputs[0], skip_special_tokens=True))"""
+    # greedy_outputs = model.generate(inputs)
+    # print(tokenizer.decode(greedy_outputs[0], skip_special_tokens=True))
 
 
     # generate the translation output using beam search

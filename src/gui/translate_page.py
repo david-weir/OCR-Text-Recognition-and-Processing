@@ -1,4 +1,3 @@
-from pydoc import cli
 from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
@@ -22,23 +21,27 @@ class TranslatePage(Frame):
 
         # create all of the main containers
         top_frame = tk.Frame(self, width=450, height=50, pady=3)
-        center = tk.Frame(self, width=450, height=40, padx=3, pady=3)
+        centre = tk.Frame(self, width=450, height=40, padx=3, pady=3)
         btm_frame = tk.Frame(self, width=450, height=45, pady=3)
 
         # layout all of the main containers
 
         top_frame.grid(row=0, sticky="ew")
-        center.grid(row=1, sticky="nsew")
+        centre.grid(row=1, sticky="nsew")
         btm_frame.grid(row=3, sticky="ew")
 
+        # create int variable that will be used in the checkbutton
         translate_opt = IntVar()
         summarise_opt = IntVar()
 
-        Checkbutton(center, text="Translate", variable=translate_opt, onvalue=1, offvalue=0).place(relx=0.5, rely=0.3, anchor=CENTER)
-        Checkbutton(center, text="Summarise", variable=summarise_opt, onvalue=1, offvalue=0).place(relx=0.5, rely=0.4, anchor=CENTER)
+        # create checkbuttons to choose which output option you want
+        Checkbutton(centre, text="Translate", variable=translate_opt, onvalue=1, offvalue=0).place(relx=0.5, rely=0.3, anchor=CENTER)
+        Checkbutton(centre, text="Summarise", variable=summarise_opt, onvalue=1, offvalue=0).place(relx=0.5, rely=0.4, anchor=CENTER)
 
-        Button(center, text="Confirm", command= lambda: self.text_options(translate_opt, summarise_opt)).place(relx=0.5, rely=0.6, anchor=CENTER)
+        # once options have been selected, confirm them
+        Button(centre, text="Confirm", command= lambda: self.text_options(translate_opt, summarise_opt)).place(relx=0.5, rely=0.6, anchor=CENTER)
 
+        # back / next page
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(edit_page.EditPage))
         previous.pack(side='left', padx=8, pady=5)
@@ -47,20 +50,24 @@ class TranslatePage(Frame):
                command = lambda : controller.show_frame(options_page.OptionsPage))
         next.pack(side='right', padx=8, pady=5)
 
+    # translate / summarise based on the options picked
     def text_options(self, translate_opt, summarise_opt):
+        # if user wants to translate and summarise
         if translate_opt.get() == 1 and summarise_opt.get() == 1:
-            translation_popup.select_translation()
+            translation_popup.select_translation() # show popup to select target language
             file = text_model.get_textfile()
             
             with open("translated.txt", 'w') as ft:
-                summarised = summarise.summarisation(file)
+                summarised = summarise.summarisation(file) # summarise the text first
+                # translate the text and write the translated version to a file
                 ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), summarised))
             text_model.set_curr_language(text_model.get_dst_language())
             text_model.set_output_file("translated.txt")
-            text_preview.view_new_version()
+            text_preview.view_new_version() # view the updated version of the text
 
+        # if the user only wants to translate
         elif translate_opt.get() == 1:
-            translation_popup.select_translation()
+            translation_popup.select_translation() # show popup to select target language
             
             file = text_model.get_textfile()
             with open(file, 'r') as f:
@@ -68,11 +75,12 @@ class TranslatePage(Frame):
                     ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), f.read()))
                 text_model.set_curr_language(text_model.get_dst_language())
                 text_model.set_output_file("translated.txt")
-            text_preview.view_new_version()
+            text_preview.view_new_version() # view the updated version of the text
             
+        # if the user only wants to summarise
         elif summarise_opt.get() == 1:
             file = text_model.get_textfile()
             with open("translated.txt", 'w') as ft:
-                ft.write(summarise.summarisation(file))
+                ft.write(summarise.summarisation(file)) # write the summarised version to a file
             text_model.set_output_file("translated.txt")
-            text_preview.view_new_version()
+            text_preview.view_new_version() # view the updated version of the text

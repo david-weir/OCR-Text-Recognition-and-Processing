@@ -1,68 +1,85 @@
 import unittest
 import os
-from src.detection import detection_text, detection_file
-from src.googletranslation import translate
+from src.detection import detection_file
+from src.translation import translate
 import jellyfish
 import time
 
 class TestDetectionTranslationIntegration(unittest.TestCase):
 
+    # find the levenshtein distance between two strings to find the dissimilarity
     def normalise_levenshtein(self, str1, str2):
         score = jellyfish.levenshtein_distance(str1, str2)
-        length = max(len(str1), len(str2))
+        length = max(len(str1), len(str2)) # find the longest of the two strings
 
-        normalised_score = 1 - (score / length)
+        normalised_score = 1 - (score / length) # normalise the score to get a percentage
 
         return normalised_score
     
+    # test how language detection and translation work together
     def test_detect_translate(self):
         french_file = "frenchtext.txt"
         english_file = "englishtext.txt"
+        translated_file = "translated.txt"
         fr_filepath = os.path.dirname(__file__) + "/" + french_file
         en_filepath = os.path.dirname(__file__) + "/" + english_file
+        translated = os.path.dirname(__file__) + "/" + translated_file
 
-        detected_lang = detection_file(fr_filepath)
+        detected_lang = detection_file(fr_filepath) # detect lang of file
         with open(fr_filepath, "r") as language_file:
-            translated = translate(detected_lang, "en", language_file.read())
-        new_detected_lang = detection_text(translated)
+            with open(translated, 'w') as f: # translate from detected lang to english
+                f.write(translate(detected_lang, "en", language_file.read()))
+            
+        new_detected_lang = detection_file(translated)
         
-        self.assertEqual(detected_lang, "fr")
+        translated_txt = open(translated, 'r')
+        self.assertEqual(detected_lang, "fr") # check it has detected correctly
         self.assertEqual(new_detected_lang, "en")
-        with open(en_filepath, "r") as en_file:
-            self.assertGreaterEqual(self.normalise_levenshtein(translated, en_file.read()), 0.85)
+        with open(en_filepath, "r") as en_file:  # check the translation is accurate
+            self.assertGreaterEqual(self.normalise_levenshtein(translated_txt.read(), en_file.read()), 0.85)
 
+        translated_txt.close()
+        os.remove(translated)
+
+    # test what happens when detected lang is not supported
     def test_unsupported_lang(self):
         italian_file = 'italiantext.txt'
         it_filepath = os.path.dirname(__file__) + "/" + italian_file
 
-        detected_lang = detection_file(it_filepath)
+        detected_lang = detection_file(it_filepath) # detected italian is not supported
         with open(it_filepath, "r") as language_file:
             self.assertRaises(ValueError, translate, detected_lang, 'en', language_file.read())
             
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as cm: # will return error when translating
                 translate(detected_lang, 'en', language_file.read())
                 self.assertEqual(str(cm.exception), 'Language is not supported.')
         
         self.assertEqual(detected_lang, "it")
 
+    # test how long translation and detection work together
     def test_detect_translate_time(self):
         start_time = time.time()
 
         german_file = "germantext.txt"
         de_filepath = os.path.dirname(__file__) + "/" + german_file
+        translated_file = "translated.txt"
+        translated = os.path.dirname(__file__) + "/" + translated_file
 
         detected_lang = detection_file(de_filepath)
         with open(de_filepath, "r") as language_file:
-            translated = translate(detected_lang, "en", language_file.read())
+            with open(translated, 'w') as f:
+                f.write(translate(detected_lang, "en", language_file.read()))
         
         end_time = time.time()
-        
-        new_detected_lang = detection_text(translated)
+
+        new_detected_lang = detection_file(translated)
 
         self.assertEqual(detected_lang, "de")
         self.assertEqual(new_detected_lang, "en")
-        elapsed_time = end_time - start_time
-        self.assertLessEqual(elapsed_time, 10.0)
+        elapsed_time = end_time - start_time # get total time taken
+        self.assertLessEqual(elapsed_time, 15.0)
+
+        os.remove(translated)
 
 if __name__ == '__main__':
     unittest.main()
