@@ -7,6 +7,7 @@ import shutil
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import convert
+import split_text
 
 # global variables
 paused = False
@@ -113,7 +114,7 @@ def create_mp3s(file, track_list):
         os.mkdir('mp3_segments')
 
     mp3 = text_model.get_output_file() # get the file to be converted to mp3
-    tracks = convert.split_txtfile(mp3, 'mp3_segments') # split the textfile and place them in the folder
+    tracks = split_text.split_txtfile(mp3, 'mp3_segments') # split the textfile and place them in the folder
     for track in tracks:
         rec = convert.download_mp3(text_model.get_curr_language(), track) # convert each chunk of text into mp3
         if file: # if the user passed a filename to the player
