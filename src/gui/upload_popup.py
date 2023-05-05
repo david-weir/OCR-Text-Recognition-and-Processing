@@ -8,9 +8,11 @@ from tkinter.filedialog import askdirectory
 def upload_images(img):
     if img == 1:
         open_printed_image()
+        text_model.set_format("single image")
     if img == 2:
         dir = askdirectory()
         text_model.set_dir_path(dir)
+        text_model.set_format("directory")
 
 
 def select_upload_type():
@@ -25,6 +27,7 @@ def select_upload_type():
     two = Radiobutton(window, text='Upload a folder', value=2, variable=var)
     two.pack(fill='x', padx=5, pady=5)
 
-    Button(window, text='Select', command=lambda: {upload_images(var.get()), window.destroy}).pack(side='bottom', pady=15) #, command=lambda: [upload_images(var.get())]
-    
+    Button(window, text='Select', command=lambda: {upload_images(var.get()), window.destroy}).pack(side='bottom',
+                                                                                                   pady=15)  # , command=lambda: [upload_images(var.get())]
+
     window.wait_window()
