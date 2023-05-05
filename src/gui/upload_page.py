@@ -69,20 +69,17 @@ class UploadPage(Frame):
                 self.show_files(files, confirm_btn)
                 text_model.set_format("printed image")
             elif clicked.get() == "Handwritten":
-                # open_images()
+                open_handwritten_images()
                 text_model.set_format("handwritten image")
 
         
         caller_button = Button(ctr_right, text="Select", command=lambda:{upload_type()})
         caller_button.place(relx=.5, rely=.7, anchor=CENTER)
 
-    # def begin(self, ctr_bottom, btm_frame, controller):
-    #     files = Label(ctr_bottom, text="Uploaded File: ")
-    #     confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller, files, confirm_btn))
 
     def show_files(self, files, confirm_btn):
         file_name = text_model.get_filename()
-        if file_name is not None: 
+        if len(file_name) != 0: 
             if files['text'] == "Uploaded File: ":
                 files['text'] += file_name
             else:
