@@ -154,8 +154,7 @@ def infer(model: Model, input_img: Path) -> None:
     batch = Batch([img], None, 1)
     recognised, prob = model.inference_batch(batch, True)
 
-    print(f'Recognised: "{recognised[0]}"')
-    print(f'Probability: {prob[0]}')
+    print(f'Recognised: {recognised[0]}')
 
 
 def parser() -> argparse.Namespace:
