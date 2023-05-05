@@ -6,7 +6,6 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from io import StringIO
-import fitz
 from textModel import *
 
 import os, sys
@@ -71,3 +70,8 @@ def open_printed_image():
 def open_folder():
     dir_path = askdirectory()
     print(dir_path)
+
+
+def open_handwritten_images():
+    paths = askopenfilenames(filetypes=[('Image Files', ['*jpeg', '*jpg', '*png'])])
+    print(paths)

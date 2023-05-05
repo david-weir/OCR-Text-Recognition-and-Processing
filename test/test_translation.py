@@ -6,11 +6,12 @@ import os
 
 class TestTranslation(unittest.TestCase):
 
+    # find the levenshtein distance between two strings to find the dissimilarity
     def normalise_levenshtein(self, str1, str2):
         score = jellyfish.levenshtein_distance(str1, str2)
-        length = max(len(str1), len(str2))
+        length = max(len(str1), len(str2)) # find the longest of the two strings
 
-        normalised_score = 1 - (score / length)
+        normalised_score = 1 - (score / length) # normalise the score to get a percentage
 
         return normalised_score
 

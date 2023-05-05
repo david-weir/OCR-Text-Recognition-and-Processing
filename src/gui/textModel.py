@@ -19,7 +19,7 @@ class textModel:
         self.dir_path = ''
 
     def set_src_language(self):
-        self.src_lang = detection_text(self.text)
+        self.src_lang = detection_file(self.textfile)
     
     def update_src_language(self, language):
         self.src_lang = language
@@ -39,6 +39,7 @@ class textModel:
     def get_curr_language(self):
         return self.curr_lang
 
+    #------- not needed
     def set_format(self, format):
         self.format = format
 
@@ -52,6 +53,7 @@ class textModel:
 
     def get_text(self):
         return self.text
+    #---------
 
     def get_textfile(self):
         return self.textfile
@@ -79,5 +81,17 @@ class textModel:
 
     def set_dir_path(self, dir_path):
         self.dir_path = dir_path
+
+    def get_language_dict(self):
+        self.lang_codes = {
+            "English": "en",
+            "French": "fr",
+            "German": "de",
+            "en": "English",
+            "fr": "French",
+            "de": "German"
+        }
+
+        return self.lang_codes
 
 text_model = textModel()

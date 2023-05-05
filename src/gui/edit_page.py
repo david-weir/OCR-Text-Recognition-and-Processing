@@ -32,24 +32,7 @@ class EditPage(Frame):
         center.rowconfigure(0, minsize=250, weight=1)
         center.columnconfigure(1, weight=1)
 
-        # message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
-        # b = Button(center, text="Edit", command=lambda: {b.destroy(), message.destroy(), self.showpage(center, top_frame)})
-        # message.pack(expand=True)
-        # b.pack(expand=True)
-        # options = [
-        #     "Language",
-        #     "English",
-        #     "French",
-        #     "German"
-        # ]
-        
-        # # datatype of menu text
-        # clicked = StringVar()
-        # dropdown = OptionMenu(top_frame, clicked, *options)
-        # if not bool(message.winfo_ismapped()):
         self.show_first_frame(center, top_frame)
-            # self.update()
-
 
         previous = Button(btm_frame, text ="Back",
                    command = lambda : controller.show_frame(upload_page.UploadPage))
@@ -59,14 +42,16 @@ class EditPage(Frame):
                command = lambda : {controller.show_frame(translate_page.TranslatePage), self.reset_page(top_frame, center)})
         next.pack(side='right', padx=8, pady=5)
 
+    # tie first frame to a function so it can be displayed again after leaving the page
     def show_first_frame(self, center, top_frame):
         message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
         b = Button(center, text="Edit", command=lambda: {b.pack_forget(), message.pack_forget(), self.showpage(center, top_frame)})
         message.pack(expand=True)
         b.pack(expand=True)
 
+    # once edit button has been clicked, display text box and language choice
     def showpage(self, center, top_frame):
-        options = [
+        options = [ # options for the dropdown menu
             "Language",
             "English",
             "French",
@@ -75,64 +60,62 @@ class EditPage(Frame):
         
         # datatype of menu text
         clicked = StringVar()
+        clicked.set("Language") # set an initial value for the dropdown menu 
         
-        # initial menu text
-        clicked.set("Language")
-        
-        # Create Dropdown menu
+        # create dropdown menu
         dropdown = OptionMenu(top_frame, clicked, *options)
         dropdown.config(width=7)
 
-        lang_codes = { # include in text model
-            "en": "English",
-            "fr": "French",
-            "de": "German"
-        }
-        lang_codes2 = {
-            "English": "en",
-            "French": "fr",
-            "German": "de"
-        }
-        select_message = Label(top_frame, text="Please Select:   ")
+        # get the dictionary that maps the language name to code, vice versa
+        lang_codes = text_model.get_language_dict()
+
+        select_message = Label(top_frame, text="Please Select: ")
         detected = text_model.get_src_language()
         
-        if detected == False:
-            print("false")
-            message = Label(top_frame, text="Failed to Detect Language.").pack(side='left', padx=5)
+        # check if language detection was successful
+        if detected == False or detected not in lang_codes: # if not, as user to manually select the language
+            Label(top_frame, text="Failed to Detect Language.").pack(side='left', padx=5)
             select_message.pack(side='left', padx=5)
-            dropdown.pack(side='left', padx=5)
+            dropdown.pack(side='left', padx=5) # display dropdown menu of languages
 
-            Button(top_frame, text="Confirm", command=lambda: text_model.update_src_language(lang_codes2[clicked])).pack(side='right', padx=5)
-        else:
+            Button(top_frame, text="Confirm", command=lambda: text_model.update_src_language(lang_codes[clicked.get()])).pack(side='right', padx=5)
+        
+        else: # if it has detected a language
             detected_label = Label(top_frame, text="Language Detected: {}".format(lang_codes[detected]))
             detected_label.pack(side='left', padx=5)
 
-            confirm_update = Button(top_frame, text="Confirm", command=lambda: text_model.update_src_language(lang_codes2[clicked]))
+            confirm = Button(top_frame, text="Confirm", command=lambda: text_model.update_src_language(lang_codes[clicked.get()]))
 
-            confirm = Button(top_frame, text="Confirm", command=lambda: text_model.update_src_language(detected))
-
-            change = Button(top_frame, text="Change", command=lambda: 
-                     {detected_label.pack_forget(), change.pack_forget(), confirm.pack_forget(), select_message.pack(side='left', padx=5), dropdown.pack(side='left', padx=5), confirm_update.pack(side='right', padx=5)})
+            change = Button(top_frame, text="Change", command=lambda: # if the language it has detected is incorrect -> display the dropdown
+                     {detected_label.pack_forget(), change.pack_forget(), select_message.pack(side='left', padx=5), dropdown.pack(side='left', padx=5), confirm.pack(side='right', padx=5)})
             change.pack(side='right', padx=5)
-            confirm.pack(side='right', padx=5)
-        
-        txt_edit = tk.Text(center)
-        fr_buttons = tk.Frame(center, relief=tk.RAISED, bd=2)
-        btn_open = tk.Button(fr_buttons, text="Save", command=lambda:text_model.set_text(txt_edit.get(1.0, tk.END)))
-        scroll = Scrollbar(center, command=txt_edit.yview)
+
+        # create the widgets for the frame
+        txt_edit = tk.Text(center, highlightthickness=0)
+        side_menu = tk.Frame(center, relief=tk.RAISED, bd=2)
+        save_button = tk.Button(side_menu, text="Save", command=lambda:self.save(txt_edit))
+        scroll = Scrollbar(center, command=txt_edit.yview) # add a scrollbar to the textbox going down
         txt_edit.configure(yscrollcommand=scroll.set)
 
-        btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-
-        fr_buttons.grid(row=0, column=0, sticky="ns")
+        save_button.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+        side_menu.grid(row=0, column=0, sticky="ns")
         txt_edit.grid(row=0, column=1, sticky="nsew")
         scroll.grid(row=0, column=2, sticky='ns')
 
         textfile = text_model.get_textfile()
-        with open(textfile, 'r') as text:
+        with open(textfile, 'r') as text: # open the textfile in the text box
             tx = text.read()
             txt_edit.insert(tk.END, tx)
 
+    # update the text file with any changes made
+    def save(self, txt_edit):
+        new_text = txt_edit.get("1.0",END)
+        new_file = 'output.txt'
+        with open(new_file, 'w') as f:
+            f.write(new_text)
+            text_model.set_textfile(new_file)
+
+    # when you leave the frame, delete the textbox and show the original frame again
     def reset_page(self, top_frame, center):
         for widget in top_frame.winfo_children():
             widget.destroy()
