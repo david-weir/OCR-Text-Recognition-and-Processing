@@ -3,6 +3,7 @@ import os
 from src.convert import download_mp3
 import pathlib
 from mutagen.mp3 import MP3
+import time
 
 class TestAudio(unittest.TestCase):
     
@@ -33,6 +34,25 @@ class TestAudio(unittest.TestCase):
 
         new_path = os.path.join(path, 'empty.mp3')        
         self.assertFalse(os.path.exists(new_path)) # path has not been created
+
+    # test the performance of the audio file creation
+    def test_audio_time(self):
+        text = 'englishtext.txt'
+        path = pathlib.Path(__file__).parent.resolve()
+
+        text_path = os.path.join(path, text)
+
+        start_time= time.time()
+
+        download_mp3("en", text_path) # convert text to mp3
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time # get time taken
+
+        self.assertLessEqual(elapsed_time, 10.0) # check the conversion has not taken more than 10 seconds
+
+        new_path = os.path.join(path, 'englishtext.mp3')
+        os.remove(new_path)
 
 
 if __name__ == '__main__':
