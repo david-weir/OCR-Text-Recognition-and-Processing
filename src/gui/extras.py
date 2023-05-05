@@ -63,7 +63,7 @@ def open_pdf():
 
 
 def open_printed_image():
-    file_path = askopenfilename(filetypes=[('Image Files', ['*jpeg', '*png'])])
+    file_path = askopenfilename(filetypes=[('Image Files', ['*jpeg', '*png', '*jpg'])])
     if file_path is not None:
         text_model.set_filename(file_path)
 
