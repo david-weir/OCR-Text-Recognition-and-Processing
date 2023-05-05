@@ -48,7 +48,7 @@ class UploadPage(Frame):
         files = Label(ctr_bottom, text="Uploaded File: ")
         confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.dir_ocr(btm_frame, controller, files, confirm_btn))
 
-        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files, confirm_btn)])
+        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_pdf_file(files, confirm_btn, ctr_bottom, btm_frame, controller)])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -71,8 +71,8 @@ class UploadPage(Frame):
         def upload_type():
             if clicked.get() == "Printed":
                 select_upload_type()
-                self.show_files(files, confirm_btn)
-                text_model.set_format("printed image")
+                self.show_printed_file(files, confirm_btn, ctr_bottom, btm_frame, controller)
+                
             elif clicked.get() == "Handwritten":
                 # open_images()
                 text_model.set_format("handwritten image")
@@ -80,7 +80,7 @@ class UploadPage(Frame):
         caller_button = Button(ctr_right, text="Select", command=lambda:{upload_type()})
         caller_button.place(relx=.5, rely=.7, anchor=CENTER)
 
-    def show_files(self, files, confirm_btn):
+    def show_pdf_file(self, files, confirm_btn, ctr_bottom, btm_frame, controller):
         file_name = text_model.get_filename()
         if file_name is not None: 
             if files['text'] == "Uploaded File: ":
@@ -88,6 +88,20 @@ class UploadPage(Frame):
             else:
                 files['text'] = "Uploaded File: " + file_name
             files.pack(anchor=CENTER)
+            confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.show_next(btm_frame, controller, files, confirm_btn))
+            confirm_btn.pack(anchor=CENTER, pady=5)
+
+    def show_printed_file(self, files, confirm_btn, ctr_bottom, btm_frame, controller):
+        file_name = text_model.get_filename()
+        if file_name is not None: 
+            if files['text'] == "Uploaded: ":
+                files['text'] += file_name
+            else:
+                files['text'] = "Uploaded: " + file_name
+            files.pack(anchor=CENTER)
+            format = text_model.get_format()
+            if format == 'single image':
+                confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.dir_ocr(btm_frame, controller, files, confirm_btn))
             confirm_btn.pack(anchor=CENTER, pady=5)
 
     def reset_page(self, files, confirm_btn):
@@ -96,7 +110,9 @@ class UploadPage(Frame):
 
     def dir_ocr(self, btm_frame, controller, files, confirm_btn):
         single_ocr(text_model.get_dir_path())
+        self.show_next(btm_frame, controller, files, confirm_btn)
 
+    def show_next(self, btm_frame, controller, files, confirm_btn):
         next = Button(btm_frame, text ="Next",
                command = lambda : {controller.show_frame(edit_page.EditPage), self.reset_page(files, confirm_btn), next.destroy()})
         next.pack(side='right', padx=8, pady=5)

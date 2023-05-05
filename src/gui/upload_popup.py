@@ -8,9 +8,11 @@ from tkinter.filedialog import askdirectory
 def upload_images(img):
     if img == 1:
         open_printed_image()
+        text_model.set_format("single image")
     if img == 2:
         dir = askdirectory()
         text_model.set_dir_path(dir)
+        text_model.set_format("directory")
 
 
 def select_upload_type():
