@@ -6,6 +6,11 @@ import edit_page
 from textModel import *
 from upload_popup import *
 
+from img_ocr import single_ocr
+import sys
+
+sys.path.insert(0, '../src/')
+
 class UploadPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -41,7 +46,7 @@ class UploadPage(Frame):
         label.place(relx=.5, rely=.5,anchor= CENTER)
         # files = Listbox(ctr_bottom, width=100, height=40)
         files = Label(ctr_bottom, text="Uploaded File: ")
-        confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller, files, confirm_btn))
+        confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.dir_ocr(btm_frame, controller, files, confirm_btn))
 
         pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda:[open_pdf(), text_model.set_format("pdf"), self.show_files(files, confirm_btn)])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
@@ -72,13 +77,7 @@ class UploadPage(Frame):
                 # open_images()
                 text_model.set_format("handwritten image")
 
-        
         caller_button = Button(ctr_right, text="Select", command=lambda:{upload_type()})
-        caller_button.place(relx=.5, rely=.7, anchor=CENTER)
-
-    # def begin(self, ctr_bottom, btm_frame, controller):
-    #     files = Label(ctr_bottom, text="Uploaded File: ")
-    #     confirm_btn = Button(ctr_bottom, text="Confirm", command=lambda: self.show_next_btn(btm_frame, controller, files, confirm_btn))
 
     def show_files(self, files, confirm_btn):
         file_name = text_model.get_filename()
@@ -93,8 +92,10 @@ class UploadPage(Frame):
     def reset_page(self, files, confirm_btn):
         files.pack_forget()
         confirm_btn.pack_forget()
-    
-    def show_next_btn(self, btm_frame, controller, files, confirm_btn):
+
+    def dir_ocr(self, btm_frame, controller, files, confirm_btn):
+        single_ocr(text_model.get_dir_path())
+
         next = Button(btm_frame, text ="Next",
                command = lambda : {controller.show_frame(edit_page.EditPage), self.reset_page(files, confirm_btn), next.destroy()})
         next.pack(side='right', padx=8, pady=5)

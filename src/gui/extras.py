@@ -66,6 +66,7 @@ def open_printed_image():
     file_path = askopenfilename(filetypes=[('Image Files', ['*jpeg', '*png', '*jpg'])])
     if file_path is not None:
         text_model.set_filename(file_path)
+        text_model.set_dir_path(file_path)
 
 def open_folder():
     dir_path = askdirectory()

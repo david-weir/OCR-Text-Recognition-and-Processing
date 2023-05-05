@@ -4,6 +4,7 @@ from textModel import *
 from extras import *
 from tkinter.filedialog import askdirectory
 
+
 def upload_images(img):
     if img == 1:
         open_printed_image()
