@@ -69,11 +69,11 @@ class EditPage(Frame):
         # get the dictionary that maps the language name to code, vice versa
         lang_codes = text_model.get_language_dict()
 
-        select_message = Label(top_frame, text="Please Select:   ")
+        select_message = Label(top_frame, text="Please Select: ")
         detected = text_model.get_src_language()
         
         # check if language detection was successful
-        if detected == False: # if not, as user to manually select the language
+        if detected == False or detected not in lang_codes: # if not, as user to manually select the language
             Label(top_frame, text="Failed to Detect Language.").pack(side='left', padx=5)
             select_message.pack(side='left', padx=5)
             dropdown.pack(side='left', padx=5) # display dropdown menu of languages
