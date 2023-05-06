@@ -10,8 +10,7 @@ def upload_images(img):
         open_printed_image()
         text_model.set_format("single image")
     if img == 2:
-        dir = askdirectory()
-        text_model.set_dir_path(dir)
+        open_folder()
         text_model.set_format("directory")
 
 

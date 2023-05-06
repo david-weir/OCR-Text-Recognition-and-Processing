@@ -71,10 +71,16 @@ def open_printed_image():
 
 def open_folder():
     dir_path = askdirectory()
-    text_model.set_dir_path(dir_path)
-    print(dir_path)
+
+    if dir_path is not None:
+        text_model.set_filename(dir_path)
+        text_model.set_dir_path(dir_path)
 
 
 def open_handwritten_images():
     img_path = askopenfilename(filetypes=[('Image Files', ['*jpeg', '*jpg', '*png'])])
-    text_model.set_dir_path(img_path)
+
+    if img_path is not None:
+        text_model.set_filename(img_path)
+        text_model.set_dir_path(img_path)
+

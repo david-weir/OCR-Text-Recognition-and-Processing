@@ -134,18 +134,21 @@ class UploadPage(Frame):
         confirm_btn.pack_forget()
 
     def single_img_ocr(self, btm_frame, controller, files, confirm_btn):
-        single_ocr(text_model.get_dir_path())
+        single_ocr(text_model.get_dir_path())  # run processed single ocr
         self.show_next(btm_frame, controller, files, confirm_btn)
 
     def dir_ocr(self, btm_frame, controller, files, confirm_btn):
-        folders_ocr(text_model.get_dir_path())
+        folders_ocr(text_model.get_dir_path())  # run ocr command for folder of images
         self.show_next(btm_frame, controller, files, confirm_btn)
 
     def run_htr(self, btm_frame, controller, files, confirm_btn):
         img_file = text_model.get_dir_path()
+
+        # runs htr command as a subprocess setting cwd to src/htr
         htr = subprocess.check_output(["python", "main_htr.py", "--img_file", img_file],
                                       cwd="../htr")
 
+        # decode as UTF8 and extract actual recognised text
         htr_out = htr.decode("utf-8").strip().split()
         recog_idx = htr_out.index("Recognised:")
         recog_txt = ' '.join(htr_out[recog_idx + 1:])
@@ -154,10 +157,9 @@ class UploadPage(Frame):
         file.write(recog_txt)
         file.close()
 
-        # set new files to pass through to next steps (translation etc.)
+        # set new files/info to pass through to next steps (translation etc.)
         text_model.set_textfile("output.txt")
         text_model.set_output_file("output.txt")
-        # text_model.set_text()
         text_model.set_src_language()
         text_model.set_curr_language(text_model.get_src_language)
         text_model.set_filename(img_file)
