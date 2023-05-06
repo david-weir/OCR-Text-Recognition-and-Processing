@@ -69,6 +69,7 @@ def open_printed_image():
 
 def open_folder():
     dir_path = askdirectory()
+    text_model.set_dir_path(dir_path)
     print(dir_path)
 
 

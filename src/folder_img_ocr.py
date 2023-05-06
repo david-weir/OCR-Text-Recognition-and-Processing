@@ -2,32 +2,32 @@
 from PIL import Image
 import pytesseract
 import os
+import sys
+from textModel import *
+
+sys.path.insert(0, './src/gui')
 
 
-def main():
+def folders_ocr(folder_path):
 
-    # path to the folder of images
-    folderpath = "./test/print text testing/data/"
+    # iterate through and OCR images in folder
+    for image in os.listdir(os.path.join(folder_path)):
+        img = Image.open(os.path.join(os.path.join(folder_path), image))  # access the image
 
-    # link to the file in which output needs to be stored
-    for folder in os.listdir(folderpath):
-        # link to the file in which output needs to be stored
-        resultpath = "./src/ocr_results/" + (folder + ".txt")
+        # convert image to text (PLACEHOLDER eng for tests)
+        text = pytesseract.image_to_string(img, lang="eng")
 
-        # iterate through and OCR images in folder
-        for image in os.listdir(os.path.join(folderpath, folder)):
-            img = Image.open(os.path.join(os.path.join(folderpath, folder), image))  # access the image
+        # append text to the new text file (creating a file if it does not already exist)
+        file1 = open("output.txt", "+a")  # output.txt should be deleted after user downloads pdfs etc
 
-            # convert image to text (PLACEHOLDER eng for tests)
-            text = pytesseract.image_to_string(img, lang="eng")
+        # write to text file + close
+        file1.write(text + "/n")
+        file1.close()
 
-            # append text to the new text file (creating a file if it does not already exist)
-            file1 = open(resultpath, "a+")
-
-            # write to text file + close
-            file1.write(text + "/n")
-            file1.close()
-
-
-if __name__ == '__main__':
-    main()
+        # set new files to pass through to next steps (translation etc.)
+        text_model.set_textfile("output.txt")
+        text_model.set_output_file("output.txt")
+        text_model.set_text()
+        text_model.set_src_language()
+        text_model.set_curr_language(text_model.get_src_language)
+        text_model.set_filename(folder_path)

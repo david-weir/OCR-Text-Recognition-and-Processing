@@ -7,6 +7,7 @@ from textModel import *
 from upload_popup import *
 
 from img_ocr import single_ocr
+from folder_img_ocr import folders_ocr
 import sys
 
 sys.path.insert(0, '../src/')
@@ -48,7 +49,7 @@ class UploadPage(Frame):
         # files = Listbox(ctr_bottom, width=100, height=40)
         files = Label(ctr_bottom, text="Uploaded File: ")
         confirm_btn = Button(ctr_bottom, text="Confirm",
-                             command=lambda: self.dir_ocr(btm_frame, controller, files, confirm_btn))
+                             command=lambda: self.single_img_ocr(btm_frame, controller, files, confirm_btn))
 
         pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda: [open_pdf(), text_model.set_format("pdf"),
                                                                            self.show_pdf_file(files, confirm_btn,
@@ -108,6 +109,9 @@ class UploadPage(Frame):
             format = text_model.get_format()
             if format == 'single image':
                 confirm_btn = Button(ctr_bottom, text="Confirm",
+                                     command=lambda: self.single_img_ocr(btm_frame, controller, files, confirm_btn))
+            elif format == "directory":
+                confirm_btn = Button(ctr_bottom, text="Confirm",
                                      command=lambda: self.dir_ocr(btm_frame, controller, files, confirm_btn))
             confirm_btn.pack(anchor=CENTER, pady=5)
 
@@ -115,8 +119,12 @@ class UploadPage(Frame):
         files.pack_forget()
         confirm_btn.pack_forget()
 
-    def dir_ocr(self, btm_frame, controller, files, confirm_btn):
+    def single_img_ocr(self, btm_frame, controller, files, confirm_btn):
         single_ocr(text_model.get_dir_path())
+        self.show_next(btm_frame, controller, files, confirm_btn)
+
+    def dir_ocr(self, btm_frame, controller, files, confirm_btn):
+        folders_ocr(text_model.get_dir_path())
         self.show_next(btm_frame, controller, files, confirm_btn)
 
     def show_next(self, btm_frame, controller, files, confirm_btn):
