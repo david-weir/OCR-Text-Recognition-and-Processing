@@ -74,5 +74,6 @@ def open_folder():
 
 
 def open_handwritten_images():
-    paths = askopenfilenames(filetypes=[('Image Files', ['*jpeg', '*jpg', '*png'])])
+    paths = askopenfilename(filetypes=[('Image Files', ['*jpeg', '*jpg', '*png'])])
+    text_model.set_dir_path(dir_path)
     print(paths)
