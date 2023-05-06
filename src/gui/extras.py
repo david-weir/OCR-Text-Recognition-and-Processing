@@ -12,8 +12,9 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from detection import *
 
+
 def open_pdf():
-    file_path = askopenfilename(filetypes=[('PDFs', '*pdf')]) #mode='rb', 
+    file_path = askopenfilename(filetypes=[('PDFs', '*pdf')])  # mode='rb',
     # print(file_path)
     if file_path is not None:
         resource_mgr = PDFResourceManager()
@@ -66,6 +67,7 @@ def open_printed_image():
     if file_path is not None:
         text_model.set_filename(file_path)
         text_model.set_dir_path(file_path)
+
 
 def open_folder():
     dir_path = askdirectory()

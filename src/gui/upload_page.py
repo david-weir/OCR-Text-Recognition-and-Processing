@@ -81,12 +81,24 @@ class UploadPage(Frame):
                 self.show_printed_file(files, confirm_btn, ctr_bottom, btm_frame, controller)
 
             elif clicked.get() == "Handwritten":
-                # open_images()
                 text_model.set_format("handwritten image")
-                # placeholder
+                self.show_ht_file(files, confirm_btn, ctr_bottom, btm_frame, controller)
 
         caller_button = Button(ctr_right, text="Select", command=lambda: {upload_type()})
         caller_button.place(relx=.5, rely=.7, anchor=CENTER)
+
+    def show_ht_file(self, files, confirm_btn, ctr_bottom, btm_frame, controller):
+        open_handwritten_images()
+        file_name = text_model.get_filename()
+        if file_name is not None:
+            if files['text'] == "Uploaded File: ":
+                files['text'] += file_name
+            else:
+                files['text'] = "Uploaded File: " + file_name
+            files.pack(anchor=CENTER)
+            confirm_btn = Button(ctr_bottom, text="Confirm",
+                                 command=lambda: self.run_htr(btm_frame, controller, files, confirm_btn))
+            confirm_btn.pack(anchor=CENTER, pady=5)
 
     def show_pdf_file(self, files, confirm_btn, ctr_bottom, btm_frame, controller):
         file_name = text_model.get_filename()
@@ -145,7 +157,7 @@ class UploadPage(Frame):
         # set new files to pass through to next steps (translation etc.)
         text_model.set_textfile("output.txt")
         text_model.set_output_file("output.txt")
-        text_model.set_text()
+        # text_model.set_text()
         text_model.set_src_language()
         text_model.set_curr_language(text_model.get_src_language)
         text_model.set_filename(img_file)
