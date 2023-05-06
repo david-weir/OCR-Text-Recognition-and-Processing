@@ -10,6 +10,7 @@ from img_ocr import single_ocr
 from folder_img_ocr import folders_ocr
 import subprocess
 import sys
+from shutil import rmtree
 
 sys.path.insert(0, '../src/')
 
@@ -165,8 +166,10 @@ class UploadPage(Frame):
         self.show_next(btm_frame, controller, files, confirm_btn)
 
     def pdf_ocr(self, btm_frame, controller, files, confirm_btn):
-        alternate_pdf_for_ocr_test()
+        open_pdf()
         folders_ocr(text_model.get_dir_path())
+
+        rmtree(text_model.get_dir_path())  # remove temporary folder of images from pdf
 
         self.show_next(btm_frame, controller, files, confirm_btn)
 
