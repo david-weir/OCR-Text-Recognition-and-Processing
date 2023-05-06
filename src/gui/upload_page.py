@@ -54,7 +54,8 @@ class UploadPage(Frame):
                              command=lambda: self.single_img_ocr(btm_frame, controller, files, confirm_btn))
 
         pdf_upload = Button(ctr_left, text="Upload PDFs",
-                            command=lambda: self.pdf_ocr(btm_frame, controller, files, confirm_btn))
+                            command=lambda: [open_pdf(), text_model.set_format("pdf"),
+                                             self.show_pdf_file(files, confirm_btn, ctr_bottom, btm_frame, controller)])
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -108,7 +109,7 @@ class UploadPage(Frame):
                 files['text'] = "Uploaded File: " + file_name
             files.pack(anchor=CENTER)
             confirm_btn = Button(ctr_bottom, text="Confirm",
-                                 command=lambda: self.show_next(btm_frame, controller, files, confirm_btn))
+                                 command=lambda: self.pdf_ocr(btm_frame, controller, files, confirm_btn))
             confirm_btn.pack(anchor=CENTER, pady=5)
 
     def show_printed_file(self, files, confirm_btn, ctr_bottom, btm_frame, controller):
@@ -166,7 +167,6 @@ class UploadPage(Frame):
         self.show_next(btm_frame, controller, files, confirm_btn)
 
     def pdf_ocr(self, btm_frame, controller, files, confirm_btn):
-        open_pdf()
         folders_ocr(text_model.get_dir_path())
 
         rmtree(text_model.get_dir_path())  # remove temporary folder of images from pdf
