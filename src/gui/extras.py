@@ -8,6 +8,8 @@ from pdfminer.pdfpage import PDFPage
 from io import StringIO
 from textModel import *
 
+from pdf2jpg import pdf2jpg
+
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from detection import *
@@ -15,11 +17,11 @@ from detection import *
 
 def open_pdf():
     file_path = askopenfilename(filetypes=[('PDFs', '*pdf')])  # mode='rb',
-    # print(file_path)
+
     if file_path is not None:
         resource_mgr = PDFResourceManager()
         ret_data = StringIO()
-        device = TextConverter(resource_mgr, ret_data, codec='utf-8', laparams=LAParams())
+        device = TextConverter(resource_mgr, ret_data, codec='latin-1', laparams=LAParams())
         input_file = open(file_path, 'rb')
         interpreter = PDFPageInterpreter(resource_mgr, device)
         password = ""
@@ -45,21 +47,21 @@ def open_pdf():
         input_file.close()
         device.close()
         ret_data.close()
-        # print(text)
+
         return text
 
-# open_pdf()
 
-"""def open_pdf1():
-    file_path = askopenfile(mode='r', filetypes=[('PDFs', '*pdf')])
-    if file_path is not None:
-        doc = fitz.open(file_path)
+def alternate_pdf_for_ocr_test():
+    pdf_path = askopenfilename(filetypes=[('PDFs', '*pdf')])
 
-        text = open("example.txt", "w")
-        for page in doc:
-            text.write(page.get_text())
+    if pdf_path is not None:
 
-        return text"""
+        pdf2jpg.convert_pdf2jpg(pdf_path, "./", pages="ALL")
+
+        text_model.set_filename(pdf_path + "_dir")
+        text_model.set_dir_path(text_model.get_filename())
+
+        text_model.set_format("directory")
 
 
 def open_printed_image():

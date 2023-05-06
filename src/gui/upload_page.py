@@ -52,10 +52,8 @@ class UploadPage(Frame):
         confirm_btn = Button(ctr_bottom, text="Confirm",
                              command=lambda: self.single_img_ocr(btm_frame, controller, files, confirm_btn))
 
-        pdf_upload = Button(ctr_left, text="Upload PDFs", command=lambda: [open_pdf(), text_model.set_format("pdf"),
-                                                                           self.show_pdf_file(files, confirm_btn,
-                                                                                              ctr_bottom, btm_frame,
-                                                                                              controller)])
+        pdf_upload = Button(ctr_left, text="Upload PDFs",
+                            command=lambda: self.pdf_ocr(btm_frame, controller, files, confirm_btn))
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
@@ -164,10 +162,13 @@ class UploadPage(Frame):
         text_model.set_curr_language(text_model.get_src_language)
         text_model.set_filename(img_file)
 
-        next = Button(btm_frame, text="Next",
-                      command=lambda: {controller.show_frame(edit_page.EditPage), self.reset_page(files, confirm_btn),
-                                       next.destroy()})
-        next.pack(side='right', padx=8, pady=5)
+        self.show_next(btm_frame, controller, files, confirm_btn)
+
+    def pdf_ocr(self, btm_frame, controller, files, confirm_btn):
+        alternate_pdf_for_ocr_test()
+        folders_ocr(text_model.get_dir_path())
+
+        self.show_next(btm_frame, controller, files, confirm_btn)
 
     def show_next(self, btm_frame, controller, files, confirm_btn):
         next = Button(btm_frame, text="Next",
