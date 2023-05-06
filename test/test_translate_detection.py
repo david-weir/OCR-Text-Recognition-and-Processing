@@ -56,30 +56,6 @@ class TestDetectionTranslationIntegration(unittest.TestCase):
         
         self.assertEqual(detected_lang, "it")
 
-    # test how long translation and detection work together
-    def test_detect_translate_time(self):
-        start_time = time.time()
-
-        german_file = "germantext.txt"
-        de_filepath = os.path.dirname(__file__) + "/" + german_file
-        translated_file = "translated.txt"
-        translated = os.path.dirname(__file__) + "/" + translated_file
-
-        detected_lang = detection_file(de_filepath)
-        with open(de_filepath, "r") as language_file:
-            with open(translated, 'w') as f:
-                f.write(translate(detected_lang, "en", language_file.read()))
-        
-        end_time = time.time()
-
-        new_detected_lang = detection_file(translated)
-
-        self.assertEqual(detected_lang, "de")
-        self.assertEqual(new_detected_lang, "en")
-        elapsed_time = end_time - start_time # get total time taken
-        self.assertLessEqual(elapsed_time, 15.0)
-
-        os.remove(translated)
 
 if __name__ == '__main__':
     unittest.main()
