@@ -32,6 +32,9 @@ class OptionsPage(Frame):
         center.grid(row=1, sticky="nsew")
         btm_frame.grid(row=3, sticky="ew")
 
+        label = Label(top_frame, text="Download Documents", font=("Verdana", 20))
+        label.place(relx=.5, rely=.5, anchor=CENTER)
+
         # create int variable that will be used in the checkbutton
         pdf_option = IntVar()
         mp3_option = IntVar()
