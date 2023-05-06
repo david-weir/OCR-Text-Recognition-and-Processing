@@ -8,6 +8,7 @@ from upload_popup import *
 
 from img_ocr import single_ocr
 from folder_img_ocr import folders_ocr
+import subprocess
 import sys
 
 sys.path.insert(0, '../src/')
@@ -82,6 +83,7 @@ class UploadPage(Frame):
             elif clicked.get() == "Handwritten":
                 # open_images()
                 text_model.set_format("handwritten image")
+                # placeholder
 
         caller_button = Button(ctr_right, text="Select", command=lambda: {upload_type()})
         caller_button.place(relx=.5, rely=.7, anchor=CENTER)
@@ -126,6 +128,32 @@ class UploadPage(Frame):
     def dir_ocr(self, btm_frame, controller, files, confirm_btn):
         folders_ocr(text_model.get_dir_path())
         self.show_next(btm_frame, controller, files, confirm_btn)
+
+    def run_htr(self, btm_frame, controller, files, confirm_btn):
+        img_file = text_model.get_dir_path()
+        htr = subprocess.check_output(["python", "main_htr.py", "--img_file", img_file],
+                                      cwd="../htr")
+
+        htr_out = htr.decode("utf-8").strip().split()
+        recog_idx = htr_out.index("Recognised:")
+        recog_txt = ' '.join(htr_out[recog_idx + 1:])
+
+        file = open("output.txt", "w")
+        file.write(recog_txt)
+        file.close()
+
+        # set new files to pass through to next steps (translation etc.)
+        text_model.set_textfile("output.txt")
+        text_model.set_output_file("output.txt")
+        text_model.set_text()
+        text_model.set_src_language()
+        text_model.set_curr_language(text_model.get_src_language)
+        text_model.set_filename(img_file)
+
+        next = Button(btm_frame, text="Next",
+                      command=lambda: {controller.show_frame(edit_page.EditPage), self.reset_page(files, confirm_btn),
+                                       next.destroy()})
+        next.pack(side='right', padx=8, pady=5)
 
     def show_next(self, btm_frame, controller, files, confirm_btn):
         next = Button(btm_frame, text="Next",
