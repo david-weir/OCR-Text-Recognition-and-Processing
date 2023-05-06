@@ -22,6 +22,7 @@ class UploadPage(Frame):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+        # boiler plate layout of page from https://stackoverflow.com/questions/34276663/tkinter-gui-layout-using-frames-and-grid
         # create all of the main containers
         top_frame = tk.Frame(self, width=450, height=50, pady=3)
         center = tk.Frame(self, width=50, height=40, padx=3, pady=3)
@@ -48,7 +49,7 @@ class UploadPage(Frame):
 
         label = Label(top_frame, text="Upload Documents", font=("Verdana", 20))
         label.place(relx=.5, rely=.5, anchor=CENTER)
-        # files = Listbox(ctr_bottom, width=100, height=40)
+        
         files = Label(ctr_bottom, text="Uploaded File: ")
         confirm_btn = Button(ctr_bottom, text="Confirm",
                              command=lambda: self.single_img_ocr(btm_frame, controller, files, confirm_btn))
@@ -59,7 +60,6 @@ class UploadPage(Frame):
         pdf_upload.place(relx=.5, rely=.5, anchor=CENTER)
 
         options = [
-            "Upload Images",
             "Printed",
             "Handwritten"
         ]

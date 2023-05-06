@@ -82,11 +82,21 @@ class OptionsPage(Frame):
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text="Finish",
-               command = lambda : {controller.show_frame(upload_page.UploadPage), text_model.reset(), self.delete_tmp_files()})
+               command = lambda : {controller.show_frame(upload_page.UploadPage), self.reset_app(audio_frame, pdf_frame, mp3_option, pdf_option)})
         next.pack(side='right', padx=8, pady=5)
 
     # function to delete the temporary files that have been created in the process
-    def delete_tmp_files(self):
+    def reset_app(self, audio_frame, pdf_frame, mp3_option, pdf_option):
+        text_model.reset()
+        
         os.remove('output.txt') # delete the file original text file created
         if os.path.exists('translated.txt'): # delete the translated/summarised textfile if there is one
             os.remove('translated.txt')
+
+        if bool(audio_frame.winfo_ismapped()):
+            audio_frame.destroy()
+        if bool(pdf_frame.winfo_ismapped()):
+            pdf_frame.destroy()
+
+        mp3_option.set(0)
+        pdf_option.set(0)

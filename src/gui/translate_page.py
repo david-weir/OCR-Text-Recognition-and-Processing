@@ -50,7 +50,7 @@ class TranslatePage(Frame):
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text ="Next",
-               command = lambda : controller.show_frame(options_page.OptionsPage))
+               command = lambda : {controller.show_frame(options_page.OptionsPage), self.reset_buttons(summarise_opt, translate_opt)})
         next.pack(side='right', padx=8, pady=5)
 
     # translate / summarise based on the options picked
@@ -63,7 +63,6 @@ class TranslatePage(Frame):
             if translation_possible:
                 with open("translated.txt", 'w') as ft:
                     summarised = summarise.summarisation(file) # summarise the text first
-                    print(summarised)
                     # translate the text and write the translated version to a file
                     ft.write(t.translate(text_model.get_src_language(), text_model.get_dst_language(), summarised))
                 text_model.set_curr_language(text_model.get_dst_language())
@@ -94,3 +93,7 @@ class TranslatePage(Frame):
                 ft.write(summarise.summarisation(file)) # write the summarised version to a file
             text_model.set_output_file("translated.txt")
             text_preview.view_new_version() # view the updated version of the text
+
+    def reset_buttons(self, summarise_opt, translate_opt):
+        translate_opt.set(0)
+        summarise_opt.set(0)

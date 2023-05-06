@@ -54,14 +54,14 @@ def skip(track_list, dictionary):
 # on the back button, play the track before the current track
 def previous(track_list, dictionary):
     mixer.music.stop()
-    track_index = track_list.curselection()[0]
-    previous_track = dictionary[track_index]
-    print(previous_track)
+    track_index = track_list.curselection()[0]-1
+    previous_track = track_list.get(track_index)
+
     if track_index >= 0 and track_index < len(dictionary): # make sure we arent going back past the first track
         mixer.music.load(dictionary[previous_track])
         mixer.music.play()
 
-        track_list.selection_clear(0, tk.END)
+        track_list.selection_clear(0, tk.END) # show that the new track is playing
         track_list.activate(track_index)
         track_list.selection_set(track_index, last=None)
 
@@ -154,7 +154,7 @@ def popup_window(file):
     play_btn = PhotoImage(file='images/play.png')
 
     controls = Frame(window) # frame to store the buttons
-    controls.pack()
+    controls.pack(pady=10)
 
     # create label for each button with the image as the label
     rewind_button = Label(controls, image=rewind_btn, borderwidth=0, highlightthickness=0)

@@ -14,6 +14,7 @@ def save(text_editor):
 def view_new_version():
     window = tk.Toplevel()  # create window of the popup
     window.geometry('550x330')
+    window.title("Preview Changes")
     window.grid_rowconfigure(0, weight=1)
     window.grid_columnconfigure(1, weight=1)
 
