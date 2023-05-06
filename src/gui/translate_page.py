@@ -30,6 +30,9 @@ class TranslatePage(Frame):
         centre.grid(row=1, sticky="nsew")
         btm_frame.grid(row=3, sticky="ew")
 
+        label = Label(top_frame, text="Modify Documents", font=("Verdana", 20))
+        label.place(relx=.5, rely=.5, anchor=CENTER)
+
         # create int variable that will be used in the checkbutton
         translate_opt = IntVar()
         summarise_opt = IntVar()
