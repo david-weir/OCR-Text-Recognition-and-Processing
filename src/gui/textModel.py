@@ -12,7 +12,6 @@ class textModel:
         self.dst_lang = ''
         self.curr_lang = ''
         self.format = ''
-        self.text = ''
         self.textfile = ''
         self.output_file = ''
         self.filename = ''
@@ -39,21 +38,11 @@ class textModel:
     def get_curr_language(self):
         return self.curr_lang
 
-    #------- not needed
     def set_format(self, format):
         self.format = format
 
     def get_format(self):
         return self.format
-
-    def set_text(self):
-        with open(self.get_textfile()) as input_file:
-            head = [next(input_file).strip() for n in range(5)]
-        self.text = " ".join(head)
-
-    def get_text(self):
-        return self.text
-    #---------
 
     def get_textfile(self):
         return self.textfile

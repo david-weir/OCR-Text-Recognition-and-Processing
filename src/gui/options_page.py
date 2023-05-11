@@ -94,9 +94,13 @@ class OptionsPage(Frame):
             os.remove('translated.txt')
 
         if bool(audio_frame.winfo_ismapped()):
-            audio_frame.destroy()
+            for widget in audio_frame.winfo_children():
+                widget.destroy()
+            audio_frame.pack_forget()
         if bool(pdf_frame.winfo_ismapped()):
-            pdf_frame.destroy()
+            for widget in pdf_frame.winfo_children():
+                widget.destroy()
+            pdf_frame.pack_forget()
 
         mp3_option.set(0)
         pdf_option.set(0)
