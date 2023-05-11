@@ -25,4 +25,4 @@ test-htr:
   before_script:
     - pip install -r requirements.txt
   script:
-    - python -m unittest discover test htr_ocr.py
+    - python -m unittest discover test htr_ocr_test.py
