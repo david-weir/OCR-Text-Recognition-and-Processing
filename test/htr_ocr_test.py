@@ -25,7 +25,7 @@ class TestHTR(unittest.TestCase):
             img_name_txt = img.strip().split(".")[0] + ".txt"
 
             htr = subprocess.check_output(["python", "main_htr.py", "--img_file", img_file],
-                                          cwd="../src/htr")
+                                          cwd="./src/htr")
 
             htr_out = htr.decode("utf-8").strip().split()
             recog_idx = htr_out.index("Recognised:")
