@@ -35,7 +35,7 @@ class EditPage(Frame):
         self.show_first_frame(center, top_frame) # call original frame when the frame is created
 
         previous = Button(btm_frame, text ="Back",
-                   command = lambda : controller.show_frame(upload_page.UploadPage))
+                   command = lambda : {controller.show_frame(upload_page.UploadPage), self.reset_page(top_frame, center)})
         previous.pack(side='left', padx=8, pady=5)
 
         next = Button(btm_frame, text ="Next",
@@ -45,7 +45,7 @@ class EditPage(Frame):
     # tie first frame to a function so it can be displayed again after leaving the page
     def show_first_frame(self, center, top_frame):
         message = tk.Label(center, text=ui_messages.edit_page, wraplength=450)
-        button = Button(center, text="Edit", command=lambda: {b.pack_forget(), message.pack_forget(), self.showpage(center, top_frame)})
+        button = Button(center, text="Edit", command=lambda: {button.pack_forget(), message.pack_forget(), self.showpage(center, top_frame)})
         message.pack(expand=True)
         button.place(relx=0.4, rely=0.6)
 
