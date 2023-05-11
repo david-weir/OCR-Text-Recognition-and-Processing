@@ -18,8 +18,8 @@ class TestHTR(unittest.TestCase):
         return normalised_score
 
     def run_write_htr(self):
-        for img in os.listdir("./htr_tests/data/"):
-            resultpath = "./htr_tests/htr_results/"
+        for img in os.listdir("./test/htr_tests/data/"):
+            resultpath = "./test/htr_tests/htr_results/"
 
             img_file = "../../test/htr_tests/data/" + str(img)
             img_name_txt = img.strip().split(".")[0] + ".txt"
@@ -39,9 +39,9 @@ class TestHTR(unittest.TestCase):
 
         self.run_write_htr()
 
-        for text_file in os.listdir("./htr_tests/htr_results/"):
-            text_file_path = "././htr_tests/htr_results/" + str(text_file)
-            gt_file_path = "./htr_tests/ground_truth/" + str(text_file)
+        for text_file in os.listdir("./test/htr_tests/htr_results/"):
+            text_file_path = "./test/htr_tests/htr_results/" + str(text_file)
+            gt_file_path = "./test/htr_tests/ground_truth/" + str(text_file)
 
             with open(text_file_path, "r") as f1:
                 htr_text = f1.read().strip().split()
