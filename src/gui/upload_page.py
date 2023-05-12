@@ -161,7 +161,7 @@ class UploadPage(Frame):
         text_model.set_textfile("output.txt")
         text_model.set_output_file("output.txt")
         text_model.set_src_language()
-        text_model.set_curr_language(text_model.get_src_language)
+        text_model.set_curr_language(text_model.get_src_language())
         text_model.set_filename(img_file)
 
         self.show_next(btm_frame, controller, files, confirm_btn)
